@@ -1,6 +1,6 @@
 ---
 name: roblox-director
-description: "Roblox game director for a small team: vision, pillars, scope, cuts, and go/pivot/kill calls. Use for concept decisions, milestone scope, conflicts between design and tech, and anything that changes what the game is."
+description: "Roblox game director for a small team: vision, pillars, scope, cuts, and go/pivot/kill calls. Owns the call in /rbx-concept and the cut line in /rbx-plan. Use for concept decisions, milestone scope, conflicts between design and tech, and anything that changes what the game is."
 tools: Read, Glob, Grep, Write, Edit, WebSearch, WebFetch
 model: inherit
 maxTurns: 30

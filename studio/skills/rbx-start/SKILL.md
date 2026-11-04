@@ -3,7 +3,7 @@ name: rbx-start
 description: "Roblox: set up the studio in this game folder. Detects the project through Studio MCP or files, creates .rbx-studio/, learns conventions.md from the existing code, and recommends a toolchain (MCP first). Also `config key=value` to change settings. Use first in any new or existing Roblox project."
 argument-hint: "[new | existing | config key=value]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, PowerShell
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, PowerShell, Agent
 ---
 
 # /rbx-start

@@ -35,7 +35,7 @@ Lead with what is on screen now. No em dashes, no filler.
 ```
 DONE
 - <path>: <what>
-- Run result: OBSERVED - <what> - <evidence path>
+- Run result: OBSERVED - <what> - <evidence path> | NOT VERIFIED - <reason>
 YOU DO
 1. <exact step>
 RISKS
@@ -43,3 +43,4 @@ RISKS
 NEXT
 - <one line>
 ```
+Open questions go at the end of the report; you cannot ask mid-task.

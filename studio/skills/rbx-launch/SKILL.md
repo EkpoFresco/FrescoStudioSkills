@@ -9,7 +9,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Agent
 # /rbx-launch
 
 ## 0. Relevance check
-Game already public with players: `SKIPPED: live game, use /rbx-update`. No playable build: `SKIPPED: build the first playable first`.
+Game already public with players (a GO launch-checklist report exists in `.rbx-studio/reports/`, or the developer says it is live): `SKIPPED: live game, use /rbx-update`. No playable build: `SKIPPED: build the first playable first`.
 
 ## 1. Context
 `{{RBX_HOME}}/templates/launch-checklist.md`, `{{RBX_HOME}}/library/roblox/discovery-playbook.md` (pre-launch and launch week), `discovery-algorithm.md` (audience gate: new games reach age-checked 16+ until Kids and Select evaluation, 250 engaged plays in 60 days, planned 100 UNVERIFIED), `policy.md` (title rules, social links field only, ads registration since 2026-05-04, maturity labels).

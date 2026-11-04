@@ -23,7 +23,7 @@ Use `{{RBX_HOME}}/templates/checkpoint.md`. Rules:
 - Append `$ARGUMENTS` as a note if given.
 
 ## 3. Commit
-If `git.local_commits` (default true) and inside a git repo: `git add -A` limited to tracked work plus `.rbx-studio/`, commit `chore(checkpoint): <one line>`. Never push. Skip the commit if a hook blocks it and report why.
+If `git.local_commits` (default true) and inside a git repo: `git add -u` (tracked changes) plus `git add .rbx-studio` (never untracked files outside it), commit `chore(checkpoint): <one line>`. Never push. Skip the commit if a hook blocks it and report why.
 
 ## Report
 Studio report shape only. No em dashes, no filler.

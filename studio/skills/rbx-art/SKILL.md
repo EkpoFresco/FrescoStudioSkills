@@ -3,13 +3,13 @@ name: rbx-art
 description: "Roblox: make or improve art through Studio MCP generation tools (meshes, textures, materials, procedural models), keep one style sheet, audit asset budgets for mobile, and run the art look check at phone and desktop framings. Writes an artist brief after two failed looks. Use for placeholder art, production assets, or 'this looks bad'."
 argument-hint: "[style | make <asset> | improve <path> | audit]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Agent
+allowed-tools: Read, Glob, Grep, Write, Edit, PowerShell, Agent
 ---
 
 # /rbx-art
 
 ## 0. Relevance check
-No Studio MCP: `make`/`improve` cannot run; do `style` or `audit` from files and say so. If the developer said it looks bad ("this looks rly bad, we gotta work on it"), skip to step 5 for that asset.
+No Studio MCP and mode `make` or `improve`: print `SKIPPED: needs Studio MCP` and offer `style` or `audit` (both work from files). If the developer said it looks bad ("this looks rly bad, we gotta work on it"), skip to step 5 for that asset.
 
 ## 1. Context
 `{{RBX_HOME}}/library/roblox/art-pipeline.md`, `{{RBX_HOME}}/library/roblox/studio-mcp-tools.md` (generation params), `{{RBX_HOME}}/docs/look-check.md`, `.rbx-studio/reports/style-sheet.md` (create from `{{RBX_HOME}}/templates/style-sheet.md` if missing; `style` mode stops after this).

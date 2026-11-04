@@ -40,3 +40,4 @@ RISKS
 NEXT
 - <one line>
 ```
+Open questions go at the end of the report; you cannot ask mid-task.

@@ -9,7 +9,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Agent
 # /rbx-update
 
 ## 0. Relevance check
-Game not live yet: `SKIPPED: not live, use /rbx-launch`. Nothing changed since the last published version (no commits or Studio edits listed): `SKIPPED: nothing to ship`.
+Game not live yet (no GO launch-checklist report in `.rbx-studio/reports/`, no `roblox.universe_id`, and the developer has not said it is live): `SKIPPED: not live, use /rbx-launch`. Nothing changed since the last published version (no commits or Studio edits listed): `SKIPPED: nothing to ship`.
 
 ## 1. Changes
 List changes since the last update (git log since the last `update-log` report, backlog rows `done`, Studio-only edits in the checkpoint). Classify: content, balance, data schema, monetization, fix.

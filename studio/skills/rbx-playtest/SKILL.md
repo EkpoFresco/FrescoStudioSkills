@@ -3,7 +3,7 @@ name: rbx-playtest
 description: "Roblox: launch the game through Studio MCP, play it with simulated input, read the console, screenshot desktop and a landscape phone via the Device Simulator, check state on the server, and write a playtest report with a verdict. `--smoke` is a 3-minute critical path; `--soak` watches memory over 10+ minutes. Use after a build, before a PR, or before publishing."
 argument-hint: "[<story or area>] [--smoke | --soak]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Agent
+allowed-tools: Read, Glob, Grep, Write, Bash, PowerShell, Agent
 ---
 
 # /rbx-playtest

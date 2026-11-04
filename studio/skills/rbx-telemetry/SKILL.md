@@ -9,7 +9,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Agent
 # /rbx-telemetry
 
 ## 0. Relevance check
-Write the questions first (from the request, the concept kill criteria, or the weakest funnel step). No question and `roblox.analytics: false`: `SKIPPED: no question to answer`. Flow or churn telemetry only if a question is about frustration, boredom, or quitting.
+Write the questions first (from the request, the concept kill criteria, or the weakest funnel step). No question and `roblox.analytics: false`: `SKIPPED: no question to answer`. No question but `analytics: true`: use the default pair (where do new players drop in the first 3 minutes; is the core loop economy inflating) and continue. Flow or churn telemetry only if a question is about frustration, boredom, or quitting.
 
 ## 1. Context
 `{{RBX_HOME}}/library/roblox/implementation-data.md` (AnalyticsService limits: server only, published games only, `120 + 20 x CCU` req/min, about 24 h to appear, 100 custom event names, 10 funnels, plan for 5 economy currencies (UNVERIFIED cap), 3 custom fields; Experiments on Configs). Existing events: Grep or `script_grep` for `AnalyticsService:Log`.
