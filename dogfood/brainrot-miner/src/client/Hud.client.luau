@@ -3,7 +3,6 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local GuiService = game:GetService("GuiService")
-local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
@@ -12,7 +11,13 @@ local Economy = require(Shared:WaitForChild("Economy"))
 local Remotes = require(Shared:WaitForChild("Remotes"))
 
 local player = Players.LocalPlayer
-local state: any = { rocks = 0, perClick = 1, perSecond = 0, brainCells = 0, levels = {}, lifetime = 0 }
+local remoteMine = Remotes.get("Mine")
+local remoteBuy = Remotes.get("BuyUpgrade")
+local remoteRebirth = Remotes.get("Rebirth")
+local remoteState = Remotes.get("State")
+
+local state: Remotes.State =
+	{ rocks = 0, perClick = 1, perSecond = 0, brainCells = 0, levels = {}, lifetime = 0, boostEnds = 0 }
 
 local gui = Instance.new("ScreenGui")
 gui.Name = "Hud"
@@ -66,8 +71,8 @@ rateLabel.TextColor3 = PALETTE.muted
 local rock = Instance.new("TextButton")
 rock.Name = "Rock"
 rock.AnchorPoint = Vector2.new(0.5, 0.5)
-rock.Position = UDim2.new(0.42, 0, 0.55, 0)
-rock.Size = UDim2.new(0.3, 0, 0.3, 0)
+rock.Position = UDim2.fromScale(0.42, 0.55)
+rock.Size = UDim2.fromScale(0.3, 0.3)
 rock.BackgroundColor3 = PALETTE.rock
 rock.Text = "BONK"
 rock.TextColor3 = PALETTE.text
@@ -90,7 +95,7 @@ local panel = Instance.new("ScrollingFrame")
 panel.Name = "Upgrades"
 panel.AnchorPoint = Vector2.new(1, 0)
 panel.Position = UDim2.new(1, -8, 0, 80)
-panel.Size = UDim2.new(0.3, 0, 0.55, 0)
+panel.Size = UDim2.fromScale(0.3, 0.55)
 panel.BackgroundColor3 = PALETTE.panel
 panel.ScrollBarThickness = 6
 panel.AutomaticCanvasSize = Enum.AutomaticSize.Y
@@ -106,6 +111,7 @@ pad.PaddingLeft = UDim.new(0, 6)
 pad.PaddingRight = UDim.new(0, 12)
 pad.Parent = panel
 
+local upgradeButtons: { [string]: TextButton } = {}
 for i, def in Config.Upgrades do
 	local b = Instance.new("TextButton")
 	b.Name = def.id
@@ -118,8 +124,9 @@ for i, def in Config.Upgrades do
 	b.TextWrapped = true
 	b.Parent = panel
 	corner(b, 10)
+	upgradeButtons[def.id] = b
 	b.Activated:Connect(function()
-		Remotes.get("BuyUpgrade"):FireServer(def.id, 1)
+		remoteBuy:FireServer(def.id, 1)
 	end)
 end
 
@@ -127,7 +134,7 @@ end
 local rebirth = Instance.new("TextButton")
 rebirth.Name = "Rebirth"
 rebirth.AnchorPoint = Vector2.new(0, 0)
-rebirth.Position = UDim2.new(0, 8, 0, 80)
+rebirth.Position = UDim2.fromOffset(8, 80)
 rebirth.Size = UDim2.new(0.18, 0, 0, 56)
 rebirth.BackgroundColor3 = PALETTE.accent
 rebirth.TextColor3 = PALETTE.bg
@@ -138,7 +145,7 @@ rebirth.Parent = gui
 corner(rebirth, 12)
 rebirth.Visible = false -- shown only when a rebirth would pay out
 rebirth.Activated:Connect(function()
-	Remotes.get("Rebirth"):FireServer()
+	remoteRebirth:FireServer()
 end)
 
 -- new-player cue: pulse the rock for the first 2 taps (skipped for returning players)
@@ -182,48 +189,44 @@ rock.Activated:Connect(function()
 	if tapCount >= CUE_TAPS then
 		stopCue()
 	end
-	Remotes.get("Mine"):FireServer()
-	local t = TweenService:Create(rock, TweenInfo.new(0.08), { Size = UDim2.new(0.27, 0, 0.27, 0) })
+	remoteMine:FireServer()
+	local t = TweenService:Create(rock, TweenInfo.new(0.08), { Size = UDim2.fromScale(0.27, 0.27) })
 	t:Play()
 	t.Completed:Connect(function()
-		TweenService:Create(rock, TweenInfo.new(0.1), { Size = UDim2.new(0.3, 0, 0.3, 0) }):Play()
+		TweenService:Create(rock, TweenInfo.new(0.1), { Size = UDim2.fromScale(0.3, 0.3) }):Play()
 	end)
 end)
 
-Remotes.get("State").OnClientEvent:Connect(function(s)
-	state = s
-	if not stateLoaded then
-		stateLoaded = true
-		if (s.lifetime or 0) > 0 then
-			tapCount = CUE_TAPS -- returning player: no cue
-		else
-			startCue()
-		end
-	end
-end)
-
--- redraw every frame
-RunService.RenderStepped:Connect(function()
-	local hud = player.PlayerGui:FindFirstChild("Hud")
-	if not hud then
-		return
-	end
-	hud:FindFirstChild("Counter"):FindFirstChild("Rocks").Text = Economy.format(state.rocks) .. " Brain Rocks"
-	hud:FindFirstChild("Counter"):FindFirstChild("Rate").Text = Economy.format(state.perSecond)
-		.. "/s  +"
-		.. Economy.format(state.perClick)
-		.. " per bonk"
+-- Redraw only when a snapshot arrives; the state does not change between pushes.
+local function render()
+	rocksLabel.Text = Economy.format(state.rocks) .. " Brain Rocks"
+	rateLabel.Text = Economy.format(state.perSecond) .. "/s  +" .. Economy.format(state.perClick) .. " per bonk"
 	for _, def in Config.Upgrades do
-		local b = hud:FindFirstChild("Upgrades"):FindFirstChild(def.id) :: TextButton
-		local owned = (state.levels and state.levels[def.id]) or 0
+		local b = upgradeButtons[def.id]
+		local owned = state.levels[def.id] or 0
 		local cost = Economy.costOf(def, owned)
 		b.Text = def.name .. " (" .. owned .. ")\n" .. Economy.format(cost) .. " rocks"
 		b.BackgroundColor3 = if state.rocks >= cost then Color3.fromRGB(60, 140, 90) else PALETTE.bg
 	end
-	local gain = Economy.rebirthGain(state.lifetime or 0, Config.RebirthRequirement)
-	local canRebirth = gain > (state.brainCells or 0)
+	local gain = Economy.rebirthGain(state.lifetime, Config.RebirthRequirement)
+	local canRebirth = gain > state.brainCells
 	rebirth.Visible = canRebirth
 	if canRebirth then
 		rebirth.Text = "BIG BRAIN\n+" .. (gain - state.brainCells) .. " cells"
+	end
+end
+
+render()
+
+remoteState.OnClientEvent:Connect(function(s: Remotes.State)
+	state = s
+	render()
+	if not stateLoaded then
+		stateLoaded = true
+		if s.lifetime > 0 then
+			tapCount = CUE_TAPS -- returning player: no cue
+		else
+			startCue()
+		end
 	end
 end)

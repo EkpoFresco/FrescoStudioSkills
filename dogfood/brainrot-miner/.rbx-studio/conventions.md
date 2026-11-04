@@ -40,13 +40,21 @@ Not set. Passive tick runs every 0.1 s and fires State to every player each tick
 | Pattern | Example (file:line) | Replace with | Priority |
 |---|---|---|---|
 | Full-state push on every 0.1 s tick | src/server/Game.server.luau:153 | Push on change, 1 Hz tick for passive income display | High |
-| No rate limit on Mine remote | src/server/Game.server.luau:81 | Per-player token bucket | High |
-| Remote names duplicated in two files | Game.server.luau:15, Remotes.luau:8 | Server loops `Remotes.Names` | Low |
+| ~~No rate limit on Mine remote~~ fixed 2026-11-04 | Game.server.luau:61 | done | done |
+| ~~Remote names duplicated in two files~~ fixed 2026-11-04 | Game.server.luau:16 now loops `Remotes.Names` | done | done |
 | Data.save on every receipt blocks the handler | Game.server.luau:145 | Keep, but add retry budget check | Med |
 | Hard-coded product id 0 | src/shared/Config.luau:49 | Real id before launch | Med |
 | Raw Instance UI building | Hud.client.luau | Keep for now; revisit if UI grows | Low |
 
 ## Learned (dated, appended by review/optimize)
+- 2026-11-04 KEEP: per-player token bucket from `Config.RateLimits`, cleared on PlayerRemoving (src/server/Game.server.luau:61 `allow`). Every new remote gets a Config entry.
+- 2026-11-04 KEEP: after any yielding load in PlayerAdded, re-check `player.Parent == Players` and release the lock if they left (src/server/Game.server.luau:84).
+- 2026-11-04 KEEP: a cancelled UpdateAsync (returns nil) is not a save; track a `wrote` flag, reset at callback start (src/server/Data.luau:108).
+- 2026-11-04 KEEP: remote payload types exported from Remotes (`Remotes.State`, src/shared/Remotes.luau:7), used by server snapshot and client handler.
+- 2026-11-04 KEEP: HUD renders on State event, with cached refs, never in RenderStepped (src/client/Hud.client.luau:201).
+- 2026-11-04 KEEP: BindToClose releases players in parallel with a pending counter (src/server/Data.luau:150).
+- 2026-11-04 PHASE OUT: `FindFirstChild` chains inside RenderStepped (was Hud.client.luau, removed). Never repeat.
+- 2026-11-04 PHASE OUT: `Remotes.get(name)` (WaitForChild) inside click handlers. Cache at module top (src/client/Hud.client.luau:14).
 
 ## Open questions
 - Is the Studio place in sync with the Rojo files (build/brainrot-miner.rbxl is checked in)?

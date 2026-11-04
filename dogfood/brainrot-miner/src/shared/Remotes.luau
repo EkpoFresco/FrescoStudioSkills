@@ -4,6 +4,16 @@
 -- State (S->C): snapshot table { rocks, lifetime, perClick, perSecond, brainCells, levels, boostEnds }.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
+export type State = {
+	rocks: number,
+	lifetime: number,
+	perClick: number,
+	perSecond: number,
+	brainCells: number,
+	levels: { [string]: number },
+	boostEnds: number,
+}
+
 local Remotes = {}
 Remotes.Names = { "Mine", "BuyUpgrade", "Rebirth", "State" }
 

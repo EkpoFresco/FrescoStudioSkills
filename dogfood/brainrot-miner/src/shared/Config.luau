@@ -27,6 +27,13 @@ Config.OfflineCapSeconds = 2 * 60 * 60
 Config.OfflineRate = 0.5
 Config.TickSeconds = 0.1
 
+-- Per-player remote rate limits: refill per second, burst size.
+Config.RateLimits = {
+	Mine = { perSecond = 15, burst = 20 },
+	BuyUpgrade = { perSecond = 10, burst = 10 },
+	Rebirth = { perSecond = 1, burst = 2 },
+} :: { [string]: { perSecond: number, burst: number } }
+
 Config.Products = {
 	RockRush = { productId = 0, minutes = 10, multiplier = 2 }, -- productId 0 = not created yet
 }

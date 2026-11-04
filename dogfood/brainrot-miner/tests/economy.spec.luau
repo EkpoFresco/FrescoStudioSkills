@@ -32,6 +32,9 @@ eq("format small", Economy.format(999), "999")
 eq("format K", Economy.format(1500), "1.50K")
 eq("format M", Economy.format(2.5e6), "2.50M")
 eq("format NaN", Economy.format(0 / 0), "0")
+eq("multiplier", Economy.multiplier(5, 0.1, 2), 3)
+eq("offline negative", Economy.offlineEarnings(10, -50, 7200, 0.5), 0)
+eq("perSecond empty", Economy.perSecond({ pick, helper }, {}), 0)
 print(`tests: {passed} passed, {failed} failed`)
 
 -- benchmark: median of 5 runs

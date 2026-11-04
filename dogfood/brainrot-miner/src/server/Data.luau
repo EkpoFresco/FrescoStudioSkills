@@ -105,17 +105,20 @@ function Data.save(player: Player, release: boolean): boolean
 		return true
 	end
 	local key = KEY_PREFIX .. player.UserId
+	local wrote = false
 	local success = pcall(function()
 		(store :: DataStore):UpdateAsync(key, function(old: any)
+			wrote = false -- callback can rerun on conflict
 			if type(old) == "table" and old._lock and old._lock.job ~= game.JobId then
-				return nil -- another server owns it now
+				return nil -- another server owns it now; cancelled write is not a save
 			end
 			local copy = table.clone(p) :: any
 			copy._lock = if release then nil else { job = game.JobId, t = os.time() }
+			wrote = true
 			return copy
 		end)
 	end)
-	return success
+	return success and wrote
 end
 
 function Data.release(player: Player)
@@ -146,9 +149,18 @@ task.spawn(function()
 	end
 end)
 
+-- Release in parallel: sequential saves can pass the 30 s shutdown window with many players.
 game:BindToClose(function()
+	local pending = 0
 	for _, player in Players:GetPlayers() do
-		Data.release(player)
+		pending += 1
+		task.spawn(function()
+			Data.release(player)
+			pending -= 1
+		end)
+	end
+	while pending > 0 do
+		task.wait()
 	end
 end)
 

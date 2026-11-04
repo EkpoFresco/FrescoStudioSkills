@@ -7,13 +7,14 @@ local MarketplaceService = game:GetService("MarketplaceService")
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config"))
 local Economy = require(Shared:WaitForChild("Economy"))
+local Remotes = require(Shared:WaitForChild("Remotes"))
 local Data = require(script.Parent:WaitForChild("Data"))
 
 -- remotes
 local folder = Instance.new("Folder")
 folder.Name = "Remotes"
 local remotes: { [string]: RemoteEvent } = {}
-for _, name in { "Mine", "BuyUpgrade", "Rebirth", "State" } do
+for _, name in Remotes.Names do
 	local r = Instance.new("RemoteEvent")
 	r.Name = name
 	r.Parent = folder
@@ -30,7 +31,7 @@ local function boost(p: Data.Profile): number
 	return if os.time() < p.BoostEnds then Config.Products.RockRush.multiplier else 1
 end
 
-local function snapshot(p: Data.Profile)
+local function snapshot(p: Data.Profile): Remotes.State
 	return {
 		rocks = p.Rocks,
 		lifetime = p.Lifetime,
@@ -54,8 +55,40 @@ local function add(p: Data.Profile, amount: number)
 	p.Lifetime += amount
 end
 
-Players.PlayerAdded:Connect(function(player)
+-- Per-player token buckets, cleared on PlayerRemoving.
+local buckets: { [Player]: { [string]: { tokens: number, t: number } } } = {}
+
+local function allow(player: Player, name: string): boolean
+	local limit = Config.RateLimits[name]
+	local mine = buckets[player]
+	if not limit or not mine then
+		return false
+	end
+	local now = os.clock()
+	local b = mine[name]
+	if not b then
+		b = { tokens = limit.burst, t = now }
+		mine[name] = b
+	end
+	b.tokens = math.min(limit.burst, b.tokens + (now - b.t) * limit.perSecond)
+	b.t = now
+	if b.tokens < 1 then
+		return false
+	end
+	b.tokens -= 1
+	return true
+end
+
+local function onPlayerAdded(player: Player)
+	buckets[player] = {}
 	local p = Data.load(player)
+	if player.Parent ~= Players then
+		-- left while the load yielded: release the session lock and drop the profile
+		if p then
+			Data.release(player)
+		end
+		return
+	end
 	if not p then
 		player:Kick("Your save is busy on another server. Rejoin in a minute.")
 		return
@@ -72,13 +105,22 @@ Players.PlayerAdded:Connect(function(player)
 		add(p, offline)
 	end
 	push(player)
-end)
+end
+
+Players.PlayerAdded:Connect(onPlayerAdded)
+for _, existing in Players:GetPlayers() do
+	task.spawn(onPlayerAdded, existing)
+end
 
 Players.PlayerRemoving:Connect(function(player)
+	buckets[player] = nil
 	Data.release(player)
 end)
 
 remotes.Mine.OnServerEvent:Connect(function(player)
+	if not allow(player, "Mine") then
+		return
+	end
 	local p = Data.get(player)
 	if not p then
 		return
@@ -89,6 +131,9 @@ remotes.Mine.OnServerEvent:Connect(function(player)
 end)
 
 remotes.BuyUpgrade.OnServerEvent:Connect(function(player, upgradeId: any, count: any)
+	if not allow(player, "BuyUpgrade") then
+		return
+	end
 	if typeof(upgradeId) ~= "string" or typeof(count) ~= "number" then
 		return
 	end
@@ -111,6 +156,9 @@ remotes.BuyUpgrade.OnServerEvent:Connect(function(player, upgradeId: any, count:
 end)
 
 remotes.Rebirth.OnServerEvent:Connect(function(player)
+	if not allow(player, "Rebirth") then
+		return
+	end
 	local p = Data.get(player)
 	if not p then
 		return
