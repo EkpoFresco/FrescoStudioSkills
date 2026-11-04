@@ -52,7 +52,7 @@ Not set. Passive tick runs every 0.1 s and fires State to every player each tick
 - 2026-11-04 KEEP: a cancelled UpdateAsync (returns nil) is not a save; track a `wrote` flag, reset at callback start (src/server/Data.luau:108).
 - 2026-11-04 KEEP: remote payload types exported from Remotes (`Remotes.State`, src/shared/Remotes.luau:7), used by server snapshot and client handler.
 - 2026-11-04 KEEP: HUD renders on State event, with cached refs, never in RenderStepped (src/client/Hud.client.luau:201).
-- 2026-11-04 KEEP: BindToClose releases players in parallel with a pending counter (src/server/Data.luau:150).
+- 2026-11-04 KEEP: BindToClose releases players in parallel with a pending counter (src/server/Data.luau:153).
 - 2026-11-04 PHASE OUT: `FindFirstChild` chains inside RenderStepped (was Hud.client.luau, removed). Never repeat.
 - 2026-11-04 PHASE OUT: `Remotes.get(name)` (WaitForChild) inside click handlers. Cache at module top (src/client/Hud.client.luau:14).
 
