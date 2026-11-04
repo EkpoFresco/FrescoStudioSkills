@@ -1,27 +1,23 @@
 # RUN_STATE
 
-Resume with: "read RUN_STATE.md and continue". Spec: `ROBLOX_STUDIO_BUILD_PROMPT.md`.
+Resume with: "read RUN_STATE.md and continue". Spec: `ROBLOX_STUDIO_BUILD_PROMPT.md`. Design: `docs/audit/ROBLOX_STUDIO_DESIGN.md` (the build spec).
 
 ## Current phase
-Phase 1 (audit) + Phase 2 (research) in parallel.
+Phase 4 (build).
 
 ## Done
-- Repo fetched from upstream v1.2.0 (05ad7c8). Push disabled (see DECISIONS D-002).
-- Env check: git, gh, node 24, python 3.11, rokit (rojo, selene, stylua, luau-lsp, lune, wally), Roblox Studio installed, built-in Studio MCP at `%LOCALAPPDATA%\Roblox\mcp.bat`. Studio MCP NOT wired into this Claude session (no mcpServers).
-- `docs/roblox/studio-mcp-tools.md` generated from local Studio MCP cache (27 tools, 7 built-in MCP skills).
+- Phase 1: `docs/audit/REPO_AUDIT.md`.
+- Phase 2: `docs/roblox/` (43 files incl. 32 genres, OPEN_QUESTIONS.md), `docs/install-research.md`. Note: QPTR replaced by PTR + bounce (D-014).
+- Phase 3: `docs/audit/ROBLOX_STUDIO_DESIGN.md`, DECISIONS D-006..D-016.
+- Phase 4 so far: hooks `studio/rbx-studio/hooks/rbx-hook.{sh,ps1}` (25/25 tests in Git Bash, pwsh 7, PS 5.1 via `tools/test-hooks.sh`), 7 rules `studio/rules/`, studio docs, 17 templates, CONTEXT.md, 18 agents `studio/agents/`.
 
 ## In progress
-- Research subagents writing `docs/roblox/*` (see list below).
-- Phase 1 audit: `docs/audit/REPO_AUDIT.md`.
-
-## Research files expected
-studio-reference.md, discovery-algorithm.md, discovery-playbook.md, market-data.md, ux-standards.md, genres/*.md, implementation.md, implementation-data.md, policy.md, art-pipeline.md, code-quality.md, docs/install-research.md (Claude Code loading model).
+- 28 skills in `studio/skills/rbx-*/SKILL.md`.
 
 ## Next 3 steps
-1. Finish REPO_AUDIT.md, commit.
-2. Collect research, write OPEN_QUESTIONS.md, commit.
-3. Write docs/audit/ROBLOX_STUDIO_DESIGN.md.
+1. Skills, then installer (`install.ps1`, `install.sh`) + `settings.hooks.json` + tools (capture-studio.ps1, studio-lint.js, dump-mcp-manifest.js).
+2. Clean old `.claude/` (keep rewritten skill-test/skill-improve), rewrite studio-tests, CLAUDE.md, README, docs/install.md; grep out Godot/Unity/Unreal.
+3. Phase 5: lint, hook tests, sandbox install test, dogfood game via Studio MCP (connect StudioMCP.exe), survival test.
 
 ## Open decisions
-- Distribution: plain `~/.claude` copy vs Claude Code plugin. Waiting on install research.
-- Dogfood build path: drive StudioMCP.exe over stdio from a script vs nested `claude -p --mcp-config`. Needs Studio launched.
+- Dogfood MCP path: nested `claude -p --mcp-config` with mcp.bat vs a Node stdio MCP client script. Needs Studio running.
