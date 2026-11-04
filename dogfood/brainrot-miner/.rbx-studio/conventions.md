@@ -12,7 +12,7 @@ Modules PascalCase (`Data`, `Economy`). Scripts `*.server.luau` / `*.client.luau
 Plain module tables returning `Data`/`Config`/`Economy`. No lifecycle framework. Shared pure logic lives in `Economy` so server and client agree (`src/shared/Economy.luau`). `--!strict` on every file.
 
 ## Networking (remote wrapper, validation style)
-Server creates the Remotes folder at runtime (`src/server/Game.server.luau:13-23`); clients use `Remotes.get(name)` (`src/shared/Remotes.luau:14`). Handlers check `typeof`, NaN, integer, and range before acting (`Game.server.luau:92-95`). Server pushes a full state snapshot after each change (`Game.server.luau:46`). No rate limits yet.
+Server creates the Remotes folder at runtime (`src/server/Game.server.luau:13-23`); clients use `Remotes.get(name)` (`src/shared/Remotes.luau:14`). Handlers check `typeof`, NaN, integer, and range before acting (`Game.server.luau:92-95`). Server pushes a full state snapshot after each change (`Game.server.luau:45`). No rate limits yet.
 
 ## Data (data module, schema, receipts)
 Only `src/server/Data.luau` touches DataStoreService (line 27). Session lock via UpdateAsync with JobId + timestamp (lines 67-80). Versioned `Profile` with `reconcile` (lines 46-57). 60 s autosave, BindToClose release (lines 149-153). One `ProcessReceipt` in `Game.server.luau:129` with PurchaseId history for idempotency.
