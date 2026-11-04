@@ -1,9 +1,10 @@
 ---
 name: rbx-teardown
-description: "Roblox: tear down a competitor or reference game: core loop, first session, UX, monetization (passes and products with prices), discovery (thumbnails, update cadence, chart history, CCU curve) using public data and third-party trackers. Mechanics only, no IP. Use before designing in a genre or when a rival is growing."
+description: "Roblox: tear down a competitor's loop, UX, monetization, and discovery from public data."
 argument-hint: "<game name | place id | URL>"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, WebSearch, WebFetch, Agent
+disable-model-invocation: true
 ---
 
 # /rbx-teardown

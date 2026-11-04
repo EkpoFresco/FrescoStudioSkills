@@ -1,6 +1,6 @@
 ---
 name: rbx-pickup
-description: "Roblox: tell me where things stand. Reads the latest handoff notes, checkpoint, backlog, locks, open GitHub issues, and recent commits, then gives the state in five lines and the best next move. Use at the start of a session, when joining a teammate's work, or when stuck on what to do next."
+description: "Roblox: where do things stand? Reads handoffs, checkpoint, backlog, locks, issues, commits; gives state and the next move."
 argument-hint: "[--deep]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash
@@ -17,7 +17,7 @@ Conventions for branches, locks, and handoffs: `{{RBX_HOME}}/docs/team.md`.
 2. `.rbx-studio/checkpoint.md`, `.rbx-studio/backlog.md`, `.rbx-studio/locks.md`.
 3. `git fetch --quiet` (read-only) then `git log --oneline -15 --all --since="7 days ago"`, `git status --short`, current branch vs main (`git rev-list --left-right --count <main>...HEAD`).
 4. `gh issue list --limit 15` if GitHub is set up.
-5. `--deep`: latest review, playtest, perf, and metrics reports in `.rbx-studio/reports/`.
+5. `--deep`: the first 20 lines (verdict block) of the latest review, playtest, perf, and metrics reports in `.rbx-studio/reports/`.
 
 ## 2. Summarize
 Five lines max: what shipped recently, what is in progress and by whom (locks), what is blocked, what the newest handoff asks for, open BLOCKER issues. Then the single highest-leverage next move and the skill that does it.

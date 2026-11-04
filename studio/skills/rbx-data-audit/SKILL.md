@@ -1,6 +1,6 @@
 ---
 name: rbx-data-audit
-description: "Roblox: audit DataStore and purchase safety: session locking, one receipt handler with PurchaseId idempotency, BindToClose saves, autosave timing, request budgets, schema versioning and migrations. Verdict SAFE or AT RISK with ranked fixes. Use before launch, before any data migration, or on a data-loss report."
+description: "Roblox: audit DataStore and purchase safety (session lock, receipts, saves, migrations). Verdict SAFE or AT RISK."
 argument-hint: "[all | receipts | migration]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Agent
@@ -12,7 +12,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Agent
 No `DataStoreService`, `ProfileStore`, `ProcessReceipt`, or `BindReceiptHandler` anywhere: `SKIPPED: no persistent data or purchases`.
 
 ## 1. Inventory
-Every DataStore call site, every receipt handler, the session lock library and version, `BindToClose`, autosave loop, `PlayerRemoving` save. State counts. More than one receipt handler, or DataStore calls outside `paths.data_module`, is a finding by itself.
+Start from the DataStore calls and Purchases sections of `.rbx-studio/map.md` (rebuild with `node "{{RBX_HOME}}/tools/rbx-map.js"` if stale). Every DataStore call site, every receipt handler, the session lock library and version, `BindToClose`, autosave loop, `PlayerRemoving` save. State counts. More than one receipt handler, or DataStore calls outside `paths.data_module`, is a finding by itself.
 
 ## 2. Checklist (data-engineer)
 Delegate to `data-engineer` with the inventory and `{{RBX_HOME}}/library/roblox/implementation-data.md` ("Never do this" list + ProcessReceipt reference). Check:

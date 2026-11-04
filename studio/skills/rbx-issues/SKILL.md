@@ -1,9 +1,10 @@
 ---
 name: rbx-issues
-description: "Roblox: read open GitHub issues with gh, triage them (severity, player impact, effort), map them to stories in .rbx-studio/backlog.md, draft bug reports, and link fixes back. Any write to GitHub (create, label, comment, close) waits for approval. Use for team work, bug reports, or 'what should we fix'."
+description: "Roblox: triage GitHub issues into stories; GitHub writes wait for approval."
 argument-hint: "[triage | draft <bug> | link <issue> <commit>]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Agent
+disable-model-invocation: true
 ---
 
 # /rbx-issues

@@ -1,6 +1,6 @@
 ---
 name: rbx-optimize
-description: "Roblox: find and fix the highest-impact performance, memory, and network issues in this project, one change at a time, with measured before/after numbers and no broken features. Works the tech debt register by score. Use for periodic cleanup passes or after /rbx-perf."
+description: "Roblox: fix top perf, memory, network debt one change at a time with measured before/after."
 argument-hint: "[top | <debt id> | <file>] [--max N]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Agent
@@ -12,7 +12,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Agent
 No `.rbx-studio/debt.md` items, no recent `/rbx-perf` report, and no target given: run the static scan from `/rbx-perf` step 3 to seed `debt.md`, then continue. Nothing found anywhere: `SKIPPED: no measurable debt`.
 
 ## 1. Pick targets
-Score each candidate: impact (1-5, players and ms/MB/KB affected) x risk of leaving it (1-5) / effort (1-5). Take the top `--max` (default 3). Prefer per-player growth (leaks), hot paths, and bandwidth over cosmetic cleanups.
+Read `.rbx-studio/map.md` first (rebuild with `node "{{RBX_HOME}}/tools/rbx-map.js"` if missing or stale) and open only the scripts it points to. Score each candidate: impact (1-5, players and ms/MB/KB affected) x risk of leaving it (1-5) / effort (1-5). Take the top `--max` (default 3). Prefer per-player growth (leaks), hot paths, and bandwidth over cosmetic cleanups.
 
 ## 2. For each target (code-optimizer, one at a time)
 1. Baseline: measure with the method that fits (`{{RBX_HOME}}/docs/standards.md` accepted sources): MicroProfiler label ms, memory MB over 5 min, instance count, KB/s, or a Lune benchmark (median of 5 runs of N iterations) for pure modules. Same place, same player count, warmup.

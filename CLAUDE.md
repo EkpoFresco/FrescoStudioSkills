@@ -3,10 +3,10 @@
 This repo builds a Claude Code studio for Roblox development. It installs globally into `~/.claude/` and works in any Roblox game folder, writing only `.rbx-studio/` there.
 
 ## Layout
-- `studio/`: the payload. `agents/` (18), `skills/rbx-*/` (28), `rules/` (7 path rules), `rbx-studio/` (CONTEXT, hooks, docs, templates, tools).
+- `studio/`: the payload. `agents/` (18), `skills/rbx-*/` (29), `rules/` (7 path rules), `rbx-studio/` (CONTEXT, hooks, docs, templates, tools).
 - `docs/roblox/`: research library, installed as `rbx-studio/library/roblox/`. Every claim has a source and date; gaps are tagged UNVERIFIED (`OPEN_QUESTIONS.md`).
 - `install.ps1` / `install.sh`: install, `-Update`, `-Uninstall`, `-Target <sandbox>`.
-- `tools/`: `studio-lint.js`, `gen-catalog.js`, `test-hooks.sh`, `test-install.ps1`, `dump-mcp-manifest.js`.
+- `tools/`: `studio-lint.js`, `gen-catalog.js`, `token-budget.js`, `test-hooks.sh`, `test-install.ps1`, `dump-mcp-manifest.js`. Payload tools in `studio/rbx-studio/tools/`: `rbx-map.js` (+ `.luau`), `lib.js`, `mcp-call.js`, `capture-studio.ps1`.
 - `studio-tests/`: catalog, rubric, specs. `.claude/skills/`: maintainer `/skill-test`, `/skill-improve`.
 - `docs/audit/`: repo audit and the design spec. `DECISIONS.md`, `RUN_STATE.md` at the root.
 

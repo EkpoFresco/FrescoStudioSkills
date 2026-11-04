@@ -1,6 +1,6 @@
 ---
 name: rbx-remote-audit
-description: "Roblox: audit every RemoteEvent, RemoteFunction, UnreliableRemoteEvent, ProximityPrompt and ClickDetector handler for server trust, argument validation, rate limits, and payload size, and attack them in Studio. Severity-ranked findings with exact fixes. Use before launch, after network changes, or on any exploit report."
+description: "Roblox: audit and attack every remote and prompt for trust, validation, rate limits. Use before launch or on exploit reports."
 argument-hint: "[all | <remote or file>]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Agent
@@ -12,7 +12,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Agent
 No remotes, prompts, or click detectors anywhere (Grep `RemoteEvent|RemoteFunction|OnServerEvent|OnServerInvoke|ProximityPrompt|ClickDetector`, or `search_game_tree` by instance_type): `SKIPPED: no client-to-server surface`.
 
 ## 1. Inventory
-List every remote and handler with path:line. State the count. Note the wrapper (if any) the project uses for validation; read it once so wrapped handlers are judged correctly.
+Start from the Remotes section of `.rbx-studio/map.md` (fired at -> handled at); rebuild it with `node "{{RBX_HOME}}/tools/rbx-map.js"` if stale. List every remote and handler with path:line. State the count. Note the wrapper (if any) the project uses for validation; read it once so wrapped handlers are judged correctly.
 
 ## 2. Static review
 For each handler: args and their checks in order (type, `math.isfinite`, range, ownership, distance, cooldown, rate limit), what state it changes, payload size estimate, `InvokeClient` use, client-trusted values (price, damage, position). Use `{{RBX_HOME}}/library/roblox/implementation.md` Networking + Exploit prevention as the checklist.

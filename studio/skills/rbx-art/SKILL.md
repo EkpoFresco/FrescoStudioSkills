@@ -1,9 +1,10 @@
 ---
 name: rbx-art
-description: "Roblox: make or improve art through Studio MCP generation tools (meshes, textures, materials, procedural models), keep one style sheet, audit asset budgets for mobile, and run the art look check at phone and desktop framings. Writes an artist brief after two failed looks. Use for placeholder art, production assets, or 'this looks bad'."
+description: "Roblox: generate or improve art via Studio MCP, style sheet, asset budget audit, art look check."
 argument-hint: "[style | make <asset> | improve <path> | audit]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, PowerShell, Agent
+disable-model-invocation: true
 ---
 
 # /rbx-art

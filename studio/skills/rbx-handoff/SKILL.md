@@ -1,9 +1,10 @@
 ---
 name: rbx-handoff
-description: "Roblox: write a handoff note for a teammate (or your future self): what changed, what is open, where to start, what to watch out for, in short direct lines. Releases module locks you hold. Use at the end of a work block or before someone else takes over."
+description: "Roblox: write a teammate handoff note and release locks."
 argument-hint: "[to <name>] [topic]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash
+disable-model-invocation: true
 ---
 
 # /rbx-handoff

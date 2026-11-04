@@ -1,9 +1,10 @@
 ---
 name: rbx-start
-description: "Roblox: set up the studio in this game folder. Detects the project through Studio MCP or files, creates .rbx-studio/, learns conventions.md from the existing code, and recommends a toolchain (MCP first). Also `config key=value` to change settings. Use first in any new or existing Roblox project."
+description: "Roblox: set up the studio in a game folder (detect via MCP or files, create .rbx-studio/, learn conventions, build the project map, pick a toolchain). `config k=v` edits settings."
 argument-hint: "[new | existing | config key=value]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, PowerShell, Agent
+disable-model-invocation: true
 ---
 
 # /rbx-start
@@ -26,6 +27,9 @@ Never move, rename, or reformat existing files.
 
 ## 3. Learn conventions (existing projects)
 More than 12 scripts: delegate to the `luau-architect` agent with this brief; 12 or fewer: do it inline (cheaper, same output): sample up to 12 scripts (entry scripts, the data module, the largest server module, the largest client module, 2 shared modules, any remote wrapper, any UI module); fill `{{RBX_HOME}}/templates/conventions.md` into `.rbx-studio/conventions.md` with file:line examples; list patterns to Keep and patterns to Phase out (with the replacement and a priority). The goal is better code over time, not copying old code. New projects: write a seed conventions.md from the default stack in `{{RBX_HOME}}/library/roblox/implementation.md`.
+
+## 3b. Project map
+Build `.rbx-studio/map.md`: files: `node "{{RBX_HOME}}/tools/rbx-map.js"`; MCP-only: the `studio` path in `~/.claude/skills/rbx-map/SKILL.md`. The conventions pass in step 3 reads the map first to pick its 12 sample files.
 
 ## 4. Toolchain recommendation
 One line of reasoning, then steps. Defaults from `{{RBX_HOME}}/library/roblox/studio-reference.md` "When to switch": solo or 2 people: Studio + MCP. 3+ scripters on shared modules or CI wanted: Rojo + Git + Wally (`/rbx-toolchain rojo`). Do not switch anything yourself.

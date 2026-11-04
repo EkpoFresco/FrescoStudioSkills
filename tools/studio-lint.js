@@ -71,7 +71,9 @@ function lintSkill(dir) {
   if (fm.name && fm.name !== name) res.fail.push(`name "${fm.name}" != folder "${name}"`);
   if (!name.startsWith('rbx-')) res.fail.push('skill name must start with rbx-');
   if (fm.description && !/^Roblox/.test(fm.description)) res.fail.push('description must start with "Roblox"');
-  if (fm.description && fm.description.length > 1000) res.warn.push('description over 1000 chars');
+  // token budget: visible skill descriptions are paid by every session, Roblox or not
+  if (fm.description && fm.description.length > 300) res.fail.push(`description ${fm.description.length} chars (budget 300)`);
+  if (name === 'rbx-ship' && fm['disable-model-invocation'] !== 'true') res.fail.push('rbx-ship must set disable-model-invocation: true (only the developer ships)');
   if (!/\n## 0\. Relevance check\n/.test(text)) res.fail.push('no "## 0. Relevance check"');
   else if (!/SKIPPED|skip/i.test(text.split('## 0. Relevance check')[1].split('\n## ')[0])) res.fail.push('relevance check never skips');
   const phases = (text.match(/\n## [1-9][0-9]?\. /g) || []).length;
@@ -97,6 +99,8 @@ function lintAgent(file) {
   for (const k of ['name', 'description', 'model']) if (!fm[k]) res.fail.push(`frontmatter missing ${k}`);
   if (fm.name !== name) res.fail.push(`name "${fm.name}" != file "${name}"`);
   if (fm.description && !/^Roblox/.test(fm.description)) res.fail.push('description must start with "Roblox"');
+  if (fm.description && fm.description.length > 200) res.fail.push(`description ${fm.description.length} chars (budget 200; listed in every session)`);
+  if (!/Token rules:/.test(text)) res.fail.push('no "Token rules:" line (map first, library by section)');
   if (!/## Knowledge/.test(text)) res.fail.push('no "## Knowledge" section');
   if (!/## Hard rules/.test(text)) res.fail.push('no "## Hard rules" section');
   if (!/## Hand off to/.test(text)) res.warn.push('no "## Hand off to" section');

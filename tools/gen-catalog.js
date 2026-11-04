@@ -9,7 +9,7 @@ const REPO = path.resolve(__dirname, '..');
 const CAT = path.join(REPO, 'studio-tests', 'catalog.yaml');
 
 const SKILL_CAT = {
-  setup: ['rbx-start', 'rbx-toolchain', 'rbx-checkpoint', 'rbx-resume'],
+  setup: ['rbx-start', 'rbx-toolchain', 'rbx-checkpoint', 'rbx-resume', 'rbx-map'],
   design: ['rbx-concept', 'rbx-genre', 'rbx-first-60', 'rbx-loop', 'rbx-plan', 'rbx-monetize', 'rbx-thumbnail'],
   build: ['rbx-build', 'rbx-art', 'rbx-telemetry'],
   audit: ['rbx-remote-audit', 'rbx-data-audit', 'rbx-perf', 'rbx-review', 'rbx-optimize', 'rbx-playtest'],

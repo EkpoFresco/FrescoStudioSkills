@@ -1,6 +1,6 @@
 ---
 name: rbx-review
-description: "Roblox: project-specific code review by code-optimizer against this game's learned conventions.md: correctness, typing, server trust, performance, memory, network, data safety, readability. Fixes what it safely can, ranks the rest, and teaches conventions.md new patterns. Use on a diff, a branch, a folder, or before a PR."
+description: "Roblox: project-specific code review against conventions.md; fixes what is safe, ranks the rest, learns patterns."
 argument-hint: "[diff | branch | <path> | all]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Agent
@@ -12,7 +12,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Agent
 Resolve scope: `diff` (default: `git diff` + staged, or recent MCP edits named by the caller), `branch` (`git diff <main>...HEAD`), a path, or `all` (sample: entry scripts + largest 10 modules). Empty scope: `SKIPPED: nothing changed`.
 
 ## 1. Context
-`.rbx-studio/conventions.md` (missing: run `/rbx-start` step 3 first, or review against `{{RBX_HOME}}/library/roblox/code-quality.md` only and say so). `{{RBX_HOME}}/docs/standards.md`.
+Read `.rbx-studio/map.md` first (rebuild with `node "{{RBX_HOME}}/tools/rbx-map.js"` if missing or stale) and open only the scripts it points to. `.rbx-studio/conventions.md` (missing: run `/rbx-start` step 3 first, or review against `{{RBX_HOME}}/library/roblox/code-quality.md` only and say so). `{{RBX_HOME}}/docs/standards.md`.
 
 ## 2. Review
 Delegate to `code-optimizer` with the exact file list (or DataModel script paths), the scope type, and "fix BLOCKER and MAJOR you can fix safely inside the scope; never reformat beyond changed lines". It runs configured gates (StyLua, Selene, luau-lsp with Roblox definitions) and the code-quality checklist.

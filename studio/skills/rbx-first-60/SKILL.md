@@ -1,6 +1,6 @@
 ---
 name: rbx-first-60
-description: "Roblox: design or review the first 60 seconds of play: time to first fun, loading and spawn, onboarding without text walls, and first-play bounce risk. Review mode launches the game via Studio MCP and screenshots phone and desktop. Use before launch and after any onboarding change."
+description: "Roblox: design or review the first 60 seconds (time to fun, bounce risk); review mode plays via Studio MCP and screenshots phone + desktop."
 argument-hint: "[design | review]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Agent

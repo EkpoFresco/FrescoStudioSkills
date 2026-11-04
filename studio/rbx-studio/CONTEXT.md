@@ -1,17 +1,13 @@
-## Roblox Studio rules (rbx-studio, active in this folder)
-
-Talk like the developer: lead with the result, short sentences, plain words, numbers and file paths. No em dashes, no filler, no recap of the request.
-Every task report uses exactly: `DONE` (what changed, 1 line each, with paths) / `YOU DO` (numbered exact steps, smallest first, real Studio menu paths) / `RISKS` (only if real) / `NEXT` (1 line).
-
-Execution: make the judgment call, log it in `.rbx-studio/decisions.md`, keep going. Ask one question with options only when a wrong guess is expensive and hard to reverse.
-Git: local commits are fine. Never push, open or merge a PR, or merge to main until the developer approves in their own words ("approved, push" or `/rbx-ship`). A hook enforces this.
-Footprint: in this game folder write only `.rbx-studio/` plus the game code a task asks for. Never restructure, rename, or reformat existing files unless asked.
-Toolchain: Studio MCP first (execute_luau, multi_edit, start_stop_play, screen_capture). If MCP tools are missing, say so once and fall back to files. Recommend Rojo + Git only when the team situation calls for it.
-Growth: QPTR over CTR. Attract players who stay. Today's signals: play-through rate, first-play bounce (<60 s, 61-180 s), D1 / D2-7 / D8-28 retention from Recommended For You.
-Apply only what fits: no framework, telemetry, or psychology module runs unless it applies to this game right now.
-Code: server never trusts the client; one receipt handler; DataStore calls only in the data module; `code-optimizer` reviews every story before it closes; optimization claims need before/after numbers.
-Visual work is not done until launched via Studio MCP and screenshotted at phone and desktop sizes (look check).
-Delegating to a studio agent: wait for its result before any step that needs it, and never write the final report while one is still running. In headless runs (`claude -p`) background agents do not report back before the session exits, so do the delegated work inline there.
-Long sessions: `/rbx-checkpoint` after each meaningful chunk (and when you finish an item `.rbx-studio/checkpoint.md` lists, update its Done and Next lines before reporting), `/rbx-resume` after a crash or compaction.
-
-Library (read only the file you need): {{RBX_HOME}}/library/roblox/ (studio-reference, studio-mcp-tools, discovery-algorithm, discovery-playbook, market-data, ux-standards, implementation, implementation-data, policy, art-pipeline, code-quality, genres/, OPEN_QUESTIONS). Studio docs: {{RBX_HOME}}/docs/. Templates: {{RBX_HOME}}/templates/. Facts tagged UNVERIFIED stay tagged when you repeat them.
+## rbx-studio rules (active in this folder)
+Voice: result first, short lines, numbers and paths, no em dashes, no filler. Every report: `DONE` / `YOU DO` (numbered, exact menu paths) / `RISKS` (only if real) / `NEXT` (1 line).
+Decide and log in `.rbx-studio/decisions.md`; ask one question with options only when a wrong guess is expensive and hard to reverse.
+Git: local commits fine. Push, PR, merge to main only after the developer approves in their own words ("approved, push" or `/rbx-ship`); a hook enforces it.
+Footprint: write only `.rbx-studio/` plus code the task asks for; never restructure or reformat existing files.
+Toolchain: Studio MCP first; say once if it is missing and fall back to files. Hybrid/Rojo: sync Studio after file edits.
+Growth: QPTR over CTR, measured by PTR, first-play bounce (<60 s, 61-180 s), D1 / D2-7 / D8-28 from Recommended For You.
+Code: server never trusts the client; one receipt handler; DataStore calls only in the data module; code-optimizer closes every story; optimization claims need before/after numbers. Visual work needs a look check (phone + desktop).
+Token rules: (1) start from `.rbx-studio/map.md` (rebuild: `node "{{RBX_HOME}}/tools/rbx-map.js"`) and open only the scripts the task needs, Grep with line numbers then Read ranges; (2) never Read a library file whole: `node "{{RBX_HOME}}/tools/lib.js" <file>` gives the TL;DR and section list, `lib.js <file> "<section>"` one section, `lib.js --grep <regex>` a fact; (3) briefs to agents ask for 15 lines or fewer; (4) read old reports' first 20 lines only.
+Agents: wait for a delegated result before any step that needs it; in headless runs (`claude -p`) do delegated work inline.
+User-only skills (start, toolchain, genre, loop, plan, monetize, thumbnail, art, telemetry, teardown, metrics, issues, handoff, ship, launch, update, map) are hidden from you: when a step needs one, read `~/.claude/skills/rbx-<name>/SKILL.md` and follow it, except `rbx-ship`, which only the developer starts.
+Long work: `/rbx-checkpoint` after each chunk (and update its Done/Next when you finish an item it lists); `/rbx-resume` after a crash or compaction.
+Library: {{RBX_HOME}}/library/roblox/ (index: `node "{{RBX_HOME}}/tools/lib.js"`). Docs: {{RBX_HOME}}/docs/. Templates: {{RBX_HOME}}/templates/. Keep UNVERIFIED tags when repeating facts.

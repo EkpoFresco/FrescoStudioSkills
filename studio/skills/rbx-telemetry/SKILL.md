@@ -1,9 +1,10 @@
 ---
 name: rbx-telemetry
-description: "Roblox: plan and add AnalyticsService events that answer real questions: onboarding funnel, funnels, economy sources and sinks, custom events, Roblox Experiments for A/B tests, and flow or churn signals only when relevant. Use when you need data to decide, or before launch."
+description: "Roblox: AnalyticsService events, funnels, economy events, Experiments, only for real questions."
 argument-hint: "[plan | add | experiment <name>]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Agent
+disable-model-invocation: true
 ---
 
 # /rbx-telemetry

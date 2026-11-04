@@ -1,6 +1,6 @@
 ---
 name: rbx-resume
-description: "Roblox: resume after a crash, kill, compaction, or new session: rebuilds state from .rbx-studio/checkpoint.md, the last-turn stamp, the auto checkpoint, and git, reconciles anything done after the checkpoint, then continues the next step. Use first thing in a fresh session on unfinished work."
+description: "Roblox: resume after a crash, kill, or compaction from the checkpoint, state stamps, and git, then continue."
 argument-hint: "[--plan-only]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Agent

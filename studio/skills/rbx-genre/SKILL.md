@@ -1,9 +1,10 @@
 ---
 name: rbx-genre
-description: "Roblox: pull genre patterns for the current game from the genre library (32 genres): core loop, session one, retention hooks, monetization norms, technical traps, and what to take or skip. Use when starting a game in a genre or blending genres."
+description: "Roblox: pull genre patterns (32-genre library) for this game: take, skip, twist, traps."
 argument-hint: "[genre | genre+genre]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Agent
+disable-model-invocation: true
 ---
 
 # /rbx-genre

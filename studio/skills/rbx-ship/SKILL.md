@@ -1,9 +1,10 @@
 ---
 name: rbx-ship
-description: "Roblox: ship a branch only after the developer approves: final checks, push, open the PR with evidence and linked issues. Running /rbx-ship yourself counts as approval for this session; the push gate hook enforces it. Use when work is reviewed and ready to share."
+description: "Roblox: after approval, push the branch and open the PR with evidence."
 argument-hint: "[branch] [--draft]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Agent
+disable-model-invocation: true
 ---
 
 # /rbx-ship

@@ -1,6 +1,6 @@
 ---
 name: rbx-checkpoint
-description: "Roblox: save session state so a long session can survive a crash, compaction, or usage cutoff: writes .rbx-studio/checkpoint.md (goal, phase, done, in progress, next 3, open decisions, files touched) and makes a local commit. Use after each meaningful chunk of work and before stopping."
+description: "Roblox: save session state to .rbx-studio/checkpoint.md and commit locally. Use after each chunk of work and before stopping."
 argument-hint: "[note]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash

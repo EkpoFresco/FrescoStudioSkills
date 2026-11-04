@@ -1,9 +1,10 @@
 ---
 name: rbx-launch
-description: "Roblox: launch checklist and go/no-go: title and description, icon and thumbnails with personalization, maturity questionnaire, audience gate plan, ads registration and budget, update log, first-60 look check, data and remote audits, perf on a low-end phone. Use in the week before a public launch."
+description: "Roblox: launch checklist and GO / NO-GO."
 argument-hint: "[check | plan]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Agent
+disable-model-invocation: true
 ---
 
 # /rbx-launch

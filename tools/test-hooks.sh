@@ -87,6 +87,13 @@ suite() {
   run "$sh" stop "$(J "$GAME" '')"; check "game: stop writes last-turn" "$([ -f "$GAME/.rbx-studio/state/last-turn.txt" ]; echo $?)"
   run "$sh" pre-compact "$(J "$GAME" '')"; check "game: pre-compact auto checkpoint" "$([ -f "$GAME/.rbx-studio/state/auto-checkpoint.md" ]; echo $?)"
   check "game: .rbx-studio/.gitignore ignores state" "$(grep -q 'state/' "$GAME/.rbx-studio/.gitignore"; echo $?)"
+  if command -v node >/dev/null 2>&1; then
+    rm -f "$GAME/.rbx-studio/map.md" "$GAME/.rbx-studio/map.json"
+    run "$sh" session-start "$(J "$GAME" '')"
+    check "game: session-start builds the project map" "$(grep -q 'Buy: ' "$GAME/.rbx-studio/map.md" 2>/dev/null && printf '%s' "$OUT" | grep -q 'Map: refreshed'; echo $?)"
+    run "$sh" session-start "$(J "$GAME" '')"
+    check "game: map reported current on next start" "$(printf '%s' "$OUT" | grep -q 'map.md is current'; echo $?)"
+  fi
   extra="$(cd "$GAME" && git status --porcelain --ignored | grep -v -E 'src/|default.project.json|\.rbx-studio/' )"
   check "game: nothing written outside .rbx-studio" "$([ -z "$extra" ]; echo $?)"
 }

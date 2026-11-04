@@ -1,9 +1,10 @@
 ---
 name: rbx-metrics
-description: "Roblox: paste Creator Analytics or third-party numbers (PTR, bounce, D1/D7/D30, session length, playtime, ARPDAU, conversion, CCU) and get a diagnosis of the first broken funnel step and the next 3 actions. Use weekly on a live game, after an update, or when growth stalls."
+description: "Roblox: paste dashboard numbers, get the first broken funnel step and 3 actions."
 argument-hint: "<pasted numbers | path to export>"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Agent
+disable-model-invocation: true
 ---
 
 # /rbx-metrics

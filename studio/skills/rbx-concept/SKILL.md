@@ -1,7 +1,7 @@
 ---
 name: rbx-concept
-description: "Roblox: write a one-page game concept brief with a hook, pillars, first 60 seconds, a discovery hypothesis and QPTR story (players who stay, not clicks), market check, and kill criteria. Use for a new game idea, a pivot, or 'is this idea good'."
-argument-hint: "[idea in a few words | path to notes]"
+description: "Roblox: brainstorm game ideas or write a one-page concept brief with a QPTR story and kill criteria. Use for new ideas, pivots, 'is this idea good'."
+argument-hint: "[brainstorm <theme or constraints> | idea in a few words | path to notes]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, WebSearch, WebFetch, Agent
 ---
@@ -10,6 +10,9 @@ allowed-tools: Read, Glob, Grep, Write, Edit, WebSearch, WebFetch, Agent
 
 ## 0. Relevance check
 If a brief already exists in `.rbx-studio/reports/concept-*.md` and no new idea was given, summarize it in 3 lines and stop (`SKIPPED: concept exists, pass a new idea to replace it`).
+
+## 0b. Brainstorm mode (`brainstorm ...`)
+No idea yet, or several: generate 5 distinct concepts inline (no agents; keep it fast and cheap). For each: name, hook (one line), genre file it builds on, the moment in the first 60 s the thumbnail promises, why RFY players stay past 3 minutes, team-size build cost (days), and one risk. Score each 1-5 on: hook clarity at phone size, retention depth (D1 / D2-7 / D8-28 hooks the genre supports), social pull (co-play), build cost (5 = cheapest), policy and IP safety. Write the table to `.rbx-studio/reports/brainstorm-<date>.md`, recommend the top one with one line why, then stop and let the developer pick. The pick runs the normal flow below with that idea. Read genre files with `node "{{RBX_HOME}}/tools/lib.js" genres/<name> "Core loop"` style section reads, not whole.
 
 ## 1. Context
 `.rbx-studio/project.yaml` (genre, team_size, monetization_style). `{{RBX_HOME}}/library/roblox/genres/README.md`, then the matching genre file. `{{RBX_HOME}}/library/roblox/discovery-algorithm.md` TL;DR. `{{RBX_HOME}}/library/roblox/market-data.md` (How an agent should use this).

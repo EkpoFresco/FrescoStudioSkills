@@ -1,6 +1,6 @@
 # rbx-studio
 
-A Claude Code studio for Roblox games. 18 agents, 28 skills, 7 path rules, 7 hooks, and a cited Roblox research library. Installs once, works in any Roblox game folder, writes only `.rbx-studio/` there.
+A Claude Code studio for Roblox games. 18 agents, 29 skills, 7 path rules, 7 hooks, and a cited Roblox research library. Installs once, works in any Roblox game folder, writes only `.rbx-studio/` there.
 
 Forked from [Claude Code Game Studios](https://github.com/Donchitos/Claude-Code-Game-Studios) v1.2.0 and rebuilt for Roblox only. Every other engine set was removed.
 
@@ -25,17 +25,24 @@ Studio MCP (the default build path): Studio > Assistant > `...` > Manage MCP Ser
 - Survives long sessions: `/rbx-checkpoint` and `/rbx-resume`, plus auto state from hooks.
 - Talks like you: result first, short lines, DONE / YOU DO / RISKS / NEXT.
 
+## Token budget
+Built to stay cheap in long sessions:
+- Every session (Roblox or not) pays ~857 tokens of listings: 12 model-visible skills, 17 user-only skills hidden from the model, short agent descriptions.
+- `.rbx-studio/map.md` (auto-refreshed at session start, zero model tokens) maps scripts, remotes, data, purchases, and hot paths, so skills open only the files they need.
+- `tools/lib.js` reads the research library by section (300 to 1,500 tokens) instead of whole files (8k to 13k).
+- Measured on the dogfood data audit: tool reads -79%, cost -29%, same findings. Track it with `node tools/token-budget.js`.
+
 ## Skills
 | Stage | Skills |
 |---|---|
-| Setup | `/rbx-start`, `/rbx-toolchain`, `/rbx-checkpoint`, `/rbx-resume` |
+| Setup | `/rbx-start`, `/rbx-toolchain`, `/rbx-map`, `/rbx-checkpoint`, `/rbx-resume` |
 | Design | `/rbx-concept`, `/rbx-genre`, `/rbx-loop`, `/rbx-first-60`, `/rbx-plan`, `/rbx-monetize`, `/rbx-thumbnail` |
 | Build | `/rbx-build`, `/rbx-art`, `/rbx-telemetry` |
 | Quality | `/rbx-review`, `/rbx-optimize`, `/rbx-perf`, `/rbx-remote-audit`, `/rbx-data-audit`, `/rbx-playtest` |
 | Growth | `/rbx-teardown`, `/rbx-metrics`, `/rbx-launch`, `/rbx-update` |
 | Team | `/rbx-issues`, `/rbx-handoff`, `/rbx-pickup`, `/rbx-ship` |
 
-Typical flow: `/rbx-start` -> `/rbx-concept` -> `/rbx-loop` -> `/rbx-first-60` -> `/rbx-plan` -> `/rbx-build S-01` (repeat) -> `/rbx-playtest` -> `/rbx-launch`. Live game: `/rbx-metrics` weekly, `/rbx-update` per release, `/rbx-optimize` monthly.
+Typical flow: `/rbx-start` -> `/rbx-concept brainstorm <theme>` -> `/rbx-concept <pick>` -> `/rbx-loop` -> `/rbx-first-60` -> `/rbx-plan` -> `/rbx-build S-01` (repeat) -> `/rbx-playtest` -> `/rbx-launch`. Live game: `/rbx-metrics` weekly, `/rbx-update` per release, `/rbx-optimize` monthly.
 
 ## Agents
 | Agent | Owns |

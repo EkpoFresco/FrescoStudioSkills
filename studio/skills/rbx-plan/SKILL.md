@@ -1,9 +1,10 @@
 ---
 name: rbx-plan
-description: "Roblox: turn the concept and loop into a milestone backlog of small stories with acceptance criteria, sizes, and a cut line. Optionally mirrors stories to GitHub issues after approval. Use after /rbx-loop, or when scope needs cutting."
+description: "Roblox: turn concept + loop into a backlog of small stories with acceptance and a cut line."
 argument-hint: "[milestone name | cut]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Agent
+disable-model-invocation: true
 ---
 
 # /rbx-plan

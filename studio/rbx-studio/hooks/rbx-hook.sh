@@ -119,6 +119,13 @@ session-start)
   if [ -f "$STATE/last-turn.txt" ] && [ -f "$ROOT/.rbx-studio/checkpoint.md" ] && [ "$STATE/last-turn.txt" -nt "$ROOT/.rbx-studio/checkpoint.md" ]; then
     echo "Note: work happened after the last checkpoint (state/last-turn.txt is newer)."
   fi
+  if [ -d "$ROOT/.rbx-studio" ] && command -v node >/dev/null 2>&1 && [ -f "$RBX_HOME/tools/rbx-map.js" ]; then
+    if ! node "$RBX_HOME/tools/rbx-map.js" "$ROOT" --check >/dev/null 2>&1; then
+      node "$RBX_HOME/tools/rbx-map.js" "$ROOT" >/dev/null 2>&1 && echo "Map: refreshed .rbx-studio/map.md. Read it before opening scripts."
+    else
+      [ -f "$ROOT/.rbx-studio/map.md" ] && echo "Map: .rbx-studio/map.md is current. Read it before opening scripts."
+    fi
+  fi
   latest=$(ls -1t "$ROOT/.rbx-studio/handoffs/"*.md 2>/dev/null | head -1)
   [ -n "$latest" ] && echo "Latest handoff: ${latest#"$ROOT"/}"
   src="$(cat "$RBX_HOME/source.txt" 2>/dev/null)"

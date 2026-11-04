@@ -1,6 +1,6 @@
 ---
 name: rbx-build
-description: "Roblox: implement one story or feature through Studio MCP or files, then close it through the code-optimizer review and, for anything visual, the look check. `--prototype` trades standards for speed. Use for 'build X', 'implement S-03', 'add a shop', 'make this work'."
+description: "Roblox: implement a story or feature via Studio MCP or files, closed by code-optimizer review and a look check. Use for build/implement/add/fix requests."
 argument-hint: "<story id | feature description> [--prototype]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, PowerShell, Agent
@@ -16,7 +16,7 @@ Load the story (backlog row or `.rbx-studio/stories/S-NN.md`). If it has no acce
 Set status `doing`.
 
 ## 2. Plan (5-10 lines)
-Files or DataModel paths to create or change; remote contract changes (`{{RBX_HOME}}/templates/remote-contract.md`); data changes (owned by `data-engineer`); UI pieces. Pick agents by type: server and remotes `server-programmer`, UI and client `client-ui-programmer`, data and purchases `data-engineer`, art `art-generator`. Independent parts run in parallel.
+Read `.rbx-studio/map.md` first (rebuild with `node "{{RBX_HOME}}/tools/rbx-map.js"` if missing or stale) and open only the scripts it points to. Files or DataModel paths to create or change; remote contract changes (`{{RBX_HOME}}/templates/remote-contract.md`); data changes (owned by `data-engineer`); UI pieces. Pick agents by type: server and remotes `server-programmer`, UI and client `client-ui-programmer`, data and purchases `data-engineer`, art `art-generator`. Independent parts run in parallel.
 
 ## 3. Implement
 Brief each agent with: story id and acceptance, exact paths, the plan lines it owns, conventions to follow, "MCP first (`multi_edit`, `execute_luau` chunked) else files", and "return the Report block". Hybrid or Rojo projects: files are the source of truth; after editing `src/`, sync Studio before step 4 (`rojo serve` with the Rojo plugin connected, or push each changed module with `multi_edit`, then `script_read` to confirm). A run against stale Studio copies is NOT VERIFIED. `--prototype`: skip types and tests, keep server validation and data safety (never skip those), mark the story `prototype` in the backlog.

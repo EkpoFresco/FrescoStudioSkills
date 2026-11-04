@@ -1,9 +1,10 @@
 ---
 name: rbx-loop
-description: "Roblox: design the core loop, session plan, D1/D7/D30 retention hooks, and progression or economy curves, with a quick curve simulation. Flow vs frustration analysis only when relevant. Use after the concept, or when retention is weak."
+description: "Roblox: core loop, session plan, retention hooks, progression curve simulation."
 argument-hint: "[design | curve | review]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Agent
+disable-model-invocation: true
 ---
 
 # /rbx-loop

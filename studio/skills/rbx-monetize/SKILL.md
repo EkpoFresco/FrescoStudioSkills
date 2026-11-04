@@ -1,9 +1,10 @@
 ---
 name: rbx-monetize
-description: "Roblox: design monetization that fits the game: gamepasses, developer products, subscriptions, rewarded ads, price ladder, placement, economy sinks and faucets, and a policy check against current Roblox rules. Use for shop design, pricing, or 'how should this game make money'."
+description: "Roblox: passes, products, subs, ads, price ladder, economy, policy check."
 argument-hint: "[design | review | price <item>]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Agent
+disable-model-invocation: true
 ---
 
 # /rbx-monetize

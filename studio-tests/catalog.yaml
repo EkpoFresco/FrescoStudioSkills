@@ -111,6 +111,16 @@ skills:
     last_spec_result: ""
     last_category: ""
     last_category_result: ""
+  - name: rbx-map
+    spec: studio-tests/skills/setup/rbx-map.md
+    category: setup
+    priority: medium
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
   - name: rbx-metrics
     spec: studio-tests/skills/growth/rbx-metrics.md
     category: growth

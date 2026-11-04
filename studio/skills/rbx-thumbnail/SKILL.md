@@ -1,9 +1,10 @@
 ---
 name: rbx-thumbnail
-description: "Roblox: write the icon and thumbnail brief and a thumbnail personalization A/B plan judged by play-through rate and first-play bounce (QPTR over CTR), then optionally produce placeholder art via Studio MCP. Use before launch, when PTR is low, or for a new update or event."
+description: "Roblox: icon and thumbnail brief plus a personalization A/B plan judged by PTR and bounce."
 argument-hint: "[brief | plan | make]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, PowerShell, Agent
+disable-model-invocation: true
 ---
 
 # /rbx-thumbnail

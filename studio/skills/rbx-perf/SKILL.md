@@ -1,6 +1,6 @@
 ---
 name: rbx-perf
-description: "Roblox: mobile performance review with real numbers: frame time via MicroProfiler (Studio MCP skill rbx-perf-profiling), memory and instance counts, SceneAnalysisService, script activity, network KB/s, against low-end phone budgets. Use when the game feels slow, before launch, or after big content drops."
+description: "Roblox: measured mobile performance review (MicroProfiler, memory, instances, network) with ranked fixes."
 argument-hint: "[full | cpu | memory | network | scene]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Agent
@@ -23,7 +23,7 @@ Delegate to `code-optimizer`:
 Record median of 3 per metric with the method.
 
 ## 3. Static scan
-Grep or `script_grep` for per-frame work (`Heartbeat`, `RenderStepped`, `PreSimulation`), `FindFirstChild` or `GetChildren` in loops, `while true do` without yields, unbounded tables keyed by player, `Touched` spam, unanchored decoration parts.
+Start from the Per-frame connections and Infinite loops sections of `.rbx-studio/map.md`. Grep or `script_grep` for per-frame work (`Heartbeat`, `RenderStepped`, `PreSimulation`), `FindFirstChild` or `GetChildren` in loops, `while true do` without yields, unbounded tables keyed by player, `Touched` spam, unanchored decoration parts.
 
 ## 4. Rank
 Each finding: metric impact (measured or estimated with label), fix, effort. Top 3 go to `/rbx-optimize`. Write `.rbx-studio/reports/perf-<date>.md` with the numbers table.

@@ -102,6 +102,14 @@ switch ($Event) {
         Write-Output 'Note: work happened after the last checkpoint (state/last-turn.txt is newer).'
       }
     }
+    $mapJs = Join-Path $RbxHome 'tools/rbx-map.js'
+    if ((Test-Path -LiteralPath $Rbx) -and (Test-Path -LiteralPath $mapJs) -and (Get-Command node -ErrorAction SilentlyContinue)) {
+      & node $mapJs $Root --check *> $null
+      if ($LASTEXITCODE -ne 0) {
+        & node $mapJs $Root *> $null
+        if ($LASTEXITCODE -eq 0) { Write-Output 'Map: refreshed .rbx-studio/map.md. Read it before opening scripts.' }
+      } elseif (Test-Path -LiteralPath (Join-Path $Rbx 'map.md')) { Write-Output 'Map: .rbx-studio/map.md is current. Read it before opening scripts.' }
+    }
     $h = Get-ChildItem -LiteralPath (Join-Path $Rbx 'handoffs') -Filter '*.md' -File | Sort-Object LastWriteTime -Descending | Select-Object -First 1
     if ($h) { Write-Output "Latest handoff: .rbx-studio/handoffs/$($h.Name)" }
     $src = (Get-Content -LiteralPath (Join-Path $RbxHome 'source.txt') -Raw)

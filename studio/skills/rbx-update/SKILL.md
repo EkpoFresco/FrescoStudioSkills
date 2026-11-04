@@ -1,9 +1,10 @@
 ---
 name: rbx-update
-description: "Roblox: ship a live update safely: changes list, data migration plan, private test, publish steps, soft shutdown or migrate-on-join, rollback version, and the player-facing update log. `--hotfix` is the smallest fix path. Publishing waits for approval. Use for any update to a live game."
+description: "Roblox: live update plan: migration, smoke test, publish steps, soft shutdown, update log. --hotfix."
 argument-hint: "[plan | --hotfix <bug>]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Agent
+disable-model-invocation: true
 ---
 
 # /rbx-update

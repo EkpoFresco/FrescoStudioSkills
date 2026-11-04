@@ -1,9 +1,10 @@
 ---
 name: rbx-toolchain
-description: "Roblox: set up or switch the dev toolchain for this game: Studio MCP, Script Sync, Rojo + VS Code, Wally, Rokit, Selene, StyLua, luau-lsp, Lune or Jest tests, GitHub Actions CI. Windows-ready commands, MCP first."
+description: "Roblox: set up or switch toolchain: Studio MCP, Script Sync, Rojo, Wally, Rokit, Selene, StyLua, luau-lsp, Lune tests, CI."
 argument-hint: "[mcp | rojo | scriptsync | lint | tests | ci | check]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, PowerShell
+disable-model-invocation: true
 ---
 
 # /rbx-toolchain
