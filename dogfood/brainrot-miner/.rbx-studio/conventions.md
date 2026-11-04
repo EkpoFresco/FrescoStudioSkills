@@ -55,6 +55,7 @@ Not set. Passive tick runs every 0.1 s and fires State to every player each tick
 - 2026-11-04 KEEP: BindToClose releases players in parallel with a pending counter (src/server/Data.luau:153).
 - 2026-11-04 PHASE OUT: `FindFirstChild` chains inside RenderStepped (was Hud.client.luau, removed). Never repeat.
 - 2026-11-04 PHASE OUT: `Remotes.get(name)` (WaitForChild) inside click handlers. Cache at module top (src/client/Hud.client.luau:14).
+- 2026-11-04 KEEP: reuse one tween pair for repeat feedback. On retrigger Cancel both, then Play, and chain only on PlaybackState.Completed (src/client/Hud.client.luau:187). Replaying without cancelling strands the rock small on rapid taps.
 
 ## Open questions
 - Is the Studio place in sync with the Rojo files (build/brainrot-miner.rbxl is checked in)?
