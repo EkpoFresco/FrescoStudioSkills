@@ -32,3 +32,4 @@ production/
 .env
 .env.*
 *.pem
+claude-overnight.log

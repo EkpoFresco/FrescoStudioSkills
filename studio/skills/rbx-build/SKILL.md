@@ -19,7 +19,7 @@ Set status `doing`.
 Files or DataModel paths to create or change; remote contract changes (`{{RBX_HOME}}/templates/remote-contract.md`); data changes (owned by `data-engineer`); UI pieces. Pick agents by type: server and remotes `server-programmer`, UI and client `client-ui-programmer`, data and purchases `data-engineer`, art `art-generator`. Independent parts run in parallel.
 
 ## 3. Implement
-Brief each agent with: story id and acceptance, exact paths, the plan lines it owns, conventions to follow, "MCP first (`multi_edit`, `execute_luau` chunked) else files", and "return the Report block". `--prototype`: skip types and tests, keep server validation and data safety (never skip those), mark the story `prototype` in the backlog.
+Brief each agent with: story id and acceptance, exact paths, the plan lines it owns, conventions to follow, "MCP first (`multi_edit`, `execute_luau` chunked) else files", and "return the Report block". Hybrid or Rojo projects: files are the source of truth; after editing `src/`, sync Studio before step 4 (`rojo serve` with the Rojo plugin connected, or push each changed module with `multi_edit`, then `script_read` to confirm). A run against stale Studio copies is NOT VERIFIED. `--prototype`: skip types and tests, keep server validation and data safety (never skip those), mark the story `prototype` in the backlog.
 
 ## 4. Run
 Studio MCP: `start_stop_play` true, `get_console_output`, exercise the feature (inputs or Server datamodel `execute_luau`), stop play. Files only: run Lune tests if present. Errors loop back to step 3 (max 3 rounds, then report).
