@@ -7,8 +7,8 @@ Scope: every agent, skill, hook, rule, template, shared doc, script, and top-lev
 
 | Area | Before | Keep | Rewrite | Merge | Cut | After (target) |
 |---|---|---|---|---|---|---|
-| Agents | 49 | 0 | 4 | 26 | 19 | 18 (14 renamed/rewritten + 4 new) |
-| Skills | 74 | 2 | 6 | 47 | 19 | 30 (28 `rbx-*` + 2 maintainer skills) |
+| Agents | 49 | 0 | 4 | 28 | 17 | 18 (14 built from rewrites and merges + 4 new) |
+| Skills | 74 | 2 | 5 | 50 | 17 | 30 (28 `rbx-*` + 2 maintainer skills) |
 | Hooks + helpers | 18 | 1 | 6 | 3 | 8 | 1 dispatcher per shell (bash + PowerShell) |
 | Rules | 14 | 1 | 5 | 2 | 6 | 7 |
 | Templates (incl. guidance) | 64 + 8 | 0 | 12 | 10 | 50 | 14 |
