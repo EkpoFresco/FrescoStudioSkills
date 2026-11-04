@@ -8,6 +8,7 @@ REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SH="$REPO/studio/rbx-studio/hooks/rbx-hook.sh"
 PS1="$REPO/studio/rbx-studio/hooks/rbx-hook.ps1"
 unset CLAUDE_PROJECT_DIR
+export RBX_GLOBAL_STATE="$(mktemp -d 2>/dev/null || echo /tmp/rbx-gstate-$$)"
 PSH="${RBX_PSH:-$(command -v pwsh || command -v powershell.exe)}"
 
 T="$(mktemp -d 2>/dev/null || echo "/tmp/rbx-hooktest-$$")"; mkdir -p "$T"
@@ -94,6 +95,14 @@ suite() {
     run "$sh" session-start "$(J "$GAME" '')"
     check "game: map reported current on next start" "$(printf '%s' "$OUT" | grep -q 'map.md is current'; echo $?)"
   fi
+  # session started in the PARENT folder (not a game): gate must follow cd / -C into the game
+  rm -f "$RBX_GLOBAL_STATE"/approval-* 2>/dev/null
+  run "$sh" pre-bash "$(printf '{"session_id":"par1","cwd":"%s","tool_name":"Bash","tool_input":{"command":"cd game \u0026\u0026 git push origin main"}}' "$(jpath "$T")")"; check "parent session: cd game && git push blocked" "$([ $RC = 2 ]; echo $?)"
+  run "$sh" pre-bash "$(printf '{"session_id":"par1","cwd":"%s","tool_name":"Bash","tool_input":{"command":"git -C game push"}}' "$(jpath "$T")")"; check "parent session: git -C game push blocked" "$([ $RC = 2 ]; echo $?)"
+  run "$sh" pre-bash "$(printf '{"session_id":"par1","cwd":"%s","tool_name":"Bash","tool_input":{"command":"cd plain \u0026\u0026 git push"}}' "$(jpath "$T")")"; check "parent session: push in a non-game folder not gated" "$([ $RC = 0 ]; echo $?)"
+  run "$sh" prompt "$(printf '{"session_id":"par1","cwd":"%s","prompt":"approved, push"}' "$(jpath "$T")")"; check "parent session: approval recorded silently" "$([ -z "$OUT" ] && ls "$RBX_GLOBAL_STATE"/approval-par1 >/dev/null 2>&1; echo $?)"
+  run "$sh" pre-bash "$(printf '{"session_id":"par1","cwd":"%s","tool_name":"Bash","tool_input":{"command":"cd game \u0026\u0026 git push origin main"}}' "$(jpath "$T")")"; check "parent session: push allowed after approval" "$([ $RC = 0 ]; echo $?)"
+  run "$sh" post-write "$(printf '{"session_id":"par1","cwd":"%s","tool_name":"Write","tool_input":{"file_path":"%s"}}' "$(jpath "$T")" "$(jpath "$GAME/src/server/Shop.server.luau")")"; check "parent session: game file edit still checked" "$(printf '%s' "$OUT" | grep -q 'Remotes: unguarded'; echo $?)"
   extra="$(cd "$GAME" && git status --porcelain --ignored | grep -v -E 'src/|default.project.json|\.rbx-studio/' )"
   check "game: nothing written outside .rbx-studio" "$([ -z "$extra" ]; echo $?)"
 }

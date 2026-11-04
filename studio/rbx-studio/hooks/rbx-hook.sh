@@ -34,24 +34,58 @@ to_unix_path() {
 
 # ---------- project root + detection ----------
 CWD="$(json_get cwd)"
-ROOT="${CLAUDE_PROJECT_DIR:-$CWD}"
-[ -z "$ROOT" ] && ROOT="$PWD"
-ROOT="$(to_unix_path "$ROOT")"
+[ -z "$CWD" ] && CWD="$PWD"
+CWD="$(to_unix_path "$CWD")"
+PROJ=""; [ -n "${CLAUDE_PROJECT_DIR:-}" ] && PROJ="$(to_unix_path "$CLAUDE_PROJECT_DIR")"
+ROOT="$CWD"
 SESSION="$(json_get session_id)"
 SESSION="${SESSION//[^A-Za-z0-9_-]/}"
 STATE="$ROOT/.rbx-studio/state"
+GSTATE="${RBX_GLOBAL_STATE:-$RBX_HOME/state}"   # session-wide approvals when the session started outside the game folder
+EXTRA_DIRS=""              # extra candidate roots (pre-bash: cd / git -C targets)
 
-is_roblox() { # $1 = deep (1) or shallow (0)
-  [ -d "$ROOT/.rbx-studio" ] && return 0
-  local f
-  for f in "$ROOT"/*.project.json "$ROOT"/*.rbxl "$ROOT"/*.rbxlx "$ROOT"/wally.toml "$ROOT"/rokit.toml "$ROOT"/aftman.toml "$ROOT"/foreman.toml; do
+detect_at() { # detect_at <dir> <deep 0|1>
+  local d="$1" f
+  [ -n "$d" ] && [ -d "$d" ] || return 1
+  [ -d "$d/.rbx-studio" ] && return 0
+  for f in "$d"/*.project.json "$d"/*.rbxl "$d"/*.rbxlx "$d"/wally.toml "$d"/rokit.toml "$d"/aftman.toml "$d"/foreman.toml; do
     [ -e "$f" ] && return 0
   done
-  if [ -f "$ROOT/.mcp.json" ] && grep -qiE 'StudioMCP|roblox' "$ROOT/.mcp.json" 2>/dev/null; then return 0; fi
-  if [ "${1:-0}" = 1 ]; then
-    find "$ROOT" -maxdepth 3 \( -name node_modules -o -name .git -o -name Packages \) -prune -o -name '*.luau' -print 2>/dev/null | head -1 | grep -q . && return 0
+  if [ -f "$d/.mcp.json" ] && grep -qiE 'StudioMCP|roblox' "$d/.mcp.json" 2>/dev/null; then return 0; fi
+  if [ "${2:-0}" = 1 ]; then
+    find "$d" -maxdepth 3 \( -name node_modules -o -name .git -o -name Packages \) -prune -o -name '*.luau' -print 2>/dev/null | head -1 | grep -q . && return 0
   fi
   return 1
+}
+# is_roblox <deep>: first Roblox root among command targets, cwd, cwd's git root, launch dir. Sets ROOT and STATE.
+is_roblox() {
+  local c gr cands
+  cands="$EXTRA_DIRS
+$CWD"
+  gr="$(git -C "$CWD" rev-parse --show-toplevel 2>/dev/null)"; [ -n "$gr" ] && cands="$cands
+$(to_unix_path "$gr")"
+  [ -n "$PROJ" ] && cands="$cands
+$PROJ"
+  while IFS= read -r c; do
+    [ -z "$c" ] && continue
+    if detect_at "$c" "${1:-0}"; then ROOT="$c"; STATE="$ROOT/.rbx-studio/state"; return 0; fi
+  done <<< "$cands"
+  return 1
+}
+# Directories a shell command targets: `cd <dir>` and `git -C <dir>` (relative to cwd), plus their git roots.
+command_dirs() {
+  local c d out=""
+  c="$(printf '%s' "$1" | LC_ALL=C grep -oE '(^|[;&|[:space:]])(cd|pushd|Set-Location|sl)[[:space:]]+("[^"]+"|'"'"'[^'"'"']+'"'"'|[^[:space:];&|]+)|[[:space:]]-C[[:space:]]+("[^"]+"|'"'"'[^'"'"']+'"'"'|[^[:space:];&|]+)' | sed -E 's/^[;&|[:space:]]*(cd|pushd|Set-Location|sl|-C)[[:space:]]+//; s/^["'"'"']//; s/["'"'"']$//')"
+  while IFS= read -r d; do
+    [ -z "$d" ] && continue
+    case "$d" in /*|[A-Za-z]:*) ;; *) d="$CWD/$d" ;; esac
+    d="$(to_unix_path "$d")"
+    out="$out
+$d"
+    d="$(git -C "$d" rev-parse --show-toplevel 2>/dev/null)" && [ -n "$d" ] && out="$out
+$(to_unix_path "$d")"
+  done <<< "$c"
+  printf '%s' "$out"
 }
 
 ensure_state() {
@@ -136,22 +170,30 @@ session-start)
   exit 0 ;;
 
 prompt)
-  is_roblox 0 || exit 0
+  [ -n "$SESSION" ] || exit 0
   p="$(json_get prompt | tr '[:upper:]' '[:lower:]')"
   [ -z "$p" ] && exit 0
   if printf '%s' "$p" | grep -qE "(don'?t|do not|never|no|not yet|stop)[[:space:]]+(to[[:space:]]+)?(push|ship|merge|open)"; then
-    rm -f "$STATE/approval-$SESSION" 2>/dev/null; exit 0
+    rm -f "$GSTATE/approval-$SESSION" 2>/dev/null
+    is_roblox 0 && rm -f "$STATE/approval-$SESSION" 2>/dev/null
+    exit 0
   fi
   if printf '%s' "$p" | grep -qE "^[[:space:]]*/rbx-ship|approved?[,.!]?[[:space:]]+(to[[:space:]]+)?(push|ship|merge)|(ok|okay|yes|go)[,.!]?[[:space:]]+(ahead[[:space:]]+(and[[:space:]]+)?)?push|push it|ship it|you can push|go ahead and (push|ship|open the pr)|open the pr"; then
-    ensure_state && date +%s > "$STATE/approval-$SESSION" && echo "[rbx-studio] Push/PR approval recorded for this session (2 h)."
+    if is_roblox 0; then
+      ensure_state && date +%s > "$STATE/approval-$SESSION" && echo "[rbx-studio] Push/PR approval recorded for this session (2 h)."
+    else
+      # session started outside a game folder: keep a session-wide token (silent) so a later `cd game && git push` is gated correctly
+      mkdir -p "$GSTATE" 2>/dev/null && date +%s > "$GSTATE/approval-$SESSION"
+    fi
   fi
   exit 0 ;;
 
 pre-bash)
   case "$INPUT" in *'"tool_input"'*[Gg]it*|*'"tool_input"'*gh\ *) ;; *) exit 0 ;; esac
-  is_roblox 0 || exit 0
   cmd="$(json_get command)"
   [ -z "$cmd" ] && exit 0
+  EXTRA_DIRS="$(command_dirs "$cmd")"
+  is_roblox 0 || exit 0
   segs="$(printf '%s\n' "$cmd" | sed -E 's/(&&|\|\||;|\|)/\n/g')"
   need_approval=""; is_commit=""; commit_all=""
   while IFS= read -r s; do
@@ -169,8 +211,9 @@ pre-bash)
     fi
   done <<< "$segs"
   if [ -n "$need_approval" ]; then
-    tok="$STATE/approval-$SESSION"
-    if [ -n "$SESSION" ] && [ -f "$tok" ] && [ "$(file_age_s "$tok")" -lt 7200 ]; then exit 0; fi
+    for tok in "$STATE/approval-$SESSION" "$GSTATE/approval-$SESSION"; do
+      if [ -n "$SESSION" ] && [ -f "$tok" ] && [ "$(file_age_s "$tok")" -lt 7200 ]; then exit 0; fi
+    done
     echo "BLOCKED by rbx-studio: '$need_approval' needs the developer's approval this session. Stop and ask. They approve by typing 'approved, push' or running /rbx-ship. Local commits are fine." >&2
     exit 2
   fi
@@ -196,9 +239,14 @@ Validate every client arg (typeof, range, ownership, rate limit) before use. If 
   exit 0 ;;
 
 post-write)
-  is_roblox 0 || exit 0
   tool="$(json_get tool_name)"
   fp="$(json_get file_path)"
+  case "$fp" in *.lua|*.luau)
+    fd="$(dirname "$(to_unix_path "$fp")")"
+    EXTRA_DIRS="$fd
+$(to_unix_path "$(git -C "$fd" rev-parse --show-toplevel 2>/dev/null)")" ;;
+  esac
+  is_roblox 0 || exit 0
   msgs=""; target=""; label=""; is_mcp=""
   case "$tool" in
     mcp__*multi_edit*)

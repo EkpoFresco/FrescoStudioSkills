@@ -33,3 +33,4 @@ production/
 .env.*
 *.pem
 claude-overnight.log
+studio/rbx-studio/state/

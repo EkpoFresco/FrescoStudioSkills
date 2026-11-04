@@ -14,27 +14,51 @@ function Get-J($path) {
   if ($null -eq $o) { return '' } ; return [string]$o
 }
 
-$Root = $env:CLAUDE_PROJECT_DIR
-if (-not $Root) { $Root = Get-J 'cwd' }
-if (-not $Root) { $Root = (Get-Location).Path }
+$Cwd = Get-J 'cwd'
+if (-not $Cwd) { $Cwd = (Get-Location).Path }
+$Proj = $env:CLAUDE_PROJECT_DIR
+$Root = $Cwd
 $Session = (Get-J 'session_id') -replace '[^A-Za-z0-9_-]', ''
 $Rbx = Join-Path $Root '.rbx-studio'
 $State = Join-Path $Rbx 'state'
+$GState = if ($env:RBX_GLOBAL_STATE) { $env:RBX_GLOBAL_STATE } else { Join-Path $RbxHome 'state' }  # session-wide approvals
+$ExtraDirs = @()   # extra candidate roots (cd / git -C targets, an edited file's folder)
 
-function Test-Roblox([bool]$deep) {
-  if (Test-Path -LiteralPath $Rbx -PathType Container) { return $true }
+function Test-RobloxAt([string]$d, [bool]$deep) {
+  if (-not $d -or -not (Test-Path -LiteralPath $d -PathType Container)) { return $false }
+  if (Test-Path -LiteralPath (Join-Path $d '.rbx-studio') -PathType Container) { return $true }
   foreach ($pat in '*.project.json', '*.rbxl', '*.rbxlx') {
-    if (Get-ChildItem -LiteralPath $Root -Filter $pat -File -ErrorAction SilentlyContinue | Select-Object -First 1) { return $true }
+    if (Get-ChildItem -LiteralPath $d -Filter $pat -File -ErrorAction SilentlyContinue | Select-Object -First 1) { return $true }
   }
-  foreach ($f in 'wally.toml', 'rokit.toml', 'aftman.toml', 'foreman.toml') { if (Test-Path -LiteralPath (Join-Path $Root $f)) { return $true } }
-  $mcp = Join-Path $Root '.mcp.json'
+  foreach ($f in 'wally.toml', 'rokit.toml', 'aftman.toml', 'foreman.toml') { if (Test-Path -LiteralPath (Join-Path $d $f)) { return $true } }
+  $mcp = Join-Path $d '.mcp.json'
   if ((Test-Path -LiteralPath $mcp) -and (Select-String -LiteralPath $mcp -Pattern 'StudioMCP|roblox' -Quiet)) { return $true }
   if ($deep) {
-    $hit = Get-ChildItem -LiteralPath $Root -Filter '*.luau' -Recurse -Depth 2 -File -ErrorAction SilentlyContinue |
+    $hit = Get-ChildItem -LiteralPath $d -Filter '*.luau' -Recurse -Depth 2 -File -ErrorAction SilentlyContinue |
       Where-Object { $_.FullName -notmatch '[\\/](node_modules|\.git|Packages)[\\/]' } | Select-Object -First 1
     if ($hit) { return $true }
   }
   return $false
+}
+function Get-GitRoot([string]$d) { if ($d -and (Test-Path -LiteralPath $d)) { $r = & git -C $d rev-parse --show-toplevel 2>$null; if ($LASTEXITCODE -eq 0 -and $r) { return ($r -replace '/', '\') } }; return $null }
+# First Roblox root among: command targets / file folder, cwd, cwd's git root, launch dir. Sets $Root, $Rbx, $State.
+function Test-Roblox([bool]$deep) {
+  $cands = @($script:ExtraDirs) + @($Cwd, (Get-GitRoot $Cwd), $Proj)
+  foreach ($c in $cands) {
+    if ($c -and (Test-RobloxAt $c $deep)) { $script:Root = $c; $script:Rbx = Join-Path $c '.rbx-studio'; $script:State = Join-Path $script:Rbx 'state'; return $true }
+  }
+  return $false
+}
+# Directories a command targets: cd/pushd/Set-Location <dir> and git -C <dir>, plus their git roots.
+function Get-CommandDirs([string]$cmd) {
+  $out = @()
+  foreach ($m in [regex]::Matches($cmd, '(?:^|[;&|\s])(?:cd|pushd|Set-Location|sl|-C)\s+("[^"]+"|''[^'']+''|[^\s;&|]+)')) {
+    $d = $m.Groups[1].Value.Trim('"', "'")
+    if (-not [IO.Path]::IsPathRooted($d) -and $d -notmatch '^/[a-zA-Z]/') { $d = Join-Path $Cwd $d }
+    if ($d -match '^/([a-zA-Z])/(.*)$') { $d = "$($Matches[1]):\$($Matches[2])" }
+    $out += $d; $g = Get-GitRoot $d; if ($g) { $out += $g }
+  }
+  return $out
 }
 
 function Initialize-State {
@@ -121,24 +145,35 @@ switch ($Event) {
   }
 
   'prompt' {
-    if (-not (Test-Roblox $false)) { exit 0 }
+    if (-not $Session) { exit 0 }
     $p = (Get-J 'prompt').ToLowerInvariant()
     if (-not $p) { exit 0 }
-    $tok = Join-Path $State "approval-$Session"
-    if ($p -match "(don'?t|do not|never|no|not yet|stop)\s+(to\s+)?(push|ship|merge|open)") { Remove-Item -LiteralPath $tok -Force; exit 0 }
+    $gtok = Join-Path $GState "approval-$Session"
+    if ($p -match "(don'?t|do not|never|no|not yet|stop)\s+(to\s+)?(push|ship|merge|open)") {
+      Remove-Item -LiteralPath $gtok -Force
+      if (Test-Roblox $false) { Remove-Item -LiteralPath (Join-Path $State "approval-$Session") -Force }
+      exit 0
+    }
     if ($p -match '^\s*/rbx-ship|approved?[,.!]?\s+(to\s+)?(push|ship|merge)|(ok|okay|yes|go)[,.!]?\s+(ahead\s+(and\s+)?)?push|push it|ship it|you can push|go ahead and (push|ship|open the pr)|open the pr') {
-      Initialize-State
-      Set-Content -LiteralPath $tok -Value ([DateTimeOffset]::UtcNow.ToUnixTimeSeconds()) -Encoding ascii
-      Write-Output '[rbx-studio] Push/PR approval recorded for this session (2 h).'
+      $now = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
+      if (Test-Roblox $false) {
+        Initialize-State
+        Set-Content -LiteralPath (Join-Path $State "approval-$Session") -Value $now -Encoding ascii
+        Write-Output '[rbx-studio] Push/PR approval recorded for this session (2 h).'
+      } else {
+        New-Item -ItemType Directory -Force -Path $GState | Out-Null
+        Set-Content -LiteralPath $gtok -Value $now -Encoding ascii
+      }
     }
     exit 0
   }
 
   'pre-bash' {
     if ($raw -notmatch '"tool_input"[\s\S]*([Gg]it|gh )') { exit 0 }
-    if (-not (Test-Roblox $false)) { exit 0 }
     $cmd = Get-J 'tool_input.command'
     if (-not $cmd) { exit 0 }
+    $script:ExtraDirs = @(Get-CommandDirs $cmd)
+    if (-not (Test-Roblox $false)) { exit 0 }
     $need = ''; $isCommit = $false; $all = $false
     foreach ($seg in ($cmd -split '&&|\|\||;|\||\r?\n')) {
       $s = ($seg.Trim() -replace '^([A-Za-z_][A-Za-z0-9_]*=\S*\s+)*', '' -replace '^(&|command|exec)\s+', '')
@@ -154,8 +189,9 @@ switch ($Event) {
       }
     }
     if ($need) {
-      $tok = Join-Path $State "approval-$Session"
-      if ($Session -and (Test-Path -LiteralPath $tok) -and ((Get-AgeSeconds $tok) -lt 7200)) { exit 0 }
+      foreach ($tok in @((Join-Path $State "approval-$Session"), (Join-Path $GState "approval-$Session"))) {
+        if ($Session -and (Test-Path -LiteralPath $tok) -and ((Get-AgeSeconds $tok) -lt 7200)) { exit 0 }
+      }
       [Console]::Error.WriteLine("BLOCKED by rbx-studio: '$need' needs the developer's approval this session. Stop and ask. They approve by typing 'approved, push' or running /rbx-ship. Local commits are fine.")
       exit 2
     }
@@ -178,9 +214,13 @@ switch ($Event) {
   }
 
   'post-write' {
-    if (-not (Test-Roblox $false)) { exit 0 }
     $tool = Get-J 'tool_name'
     $fp = Get-J 'tool_input.file_path'
+    if ($fp -match '\.(lua|luau)$' -and (Test-Path -LiteralPath $fp)) {
+      $fd = Split-Path -Parent (Resolve-Path -LiteralPath $fp).Path
+      $script:ExtraDirs = @($fd, (Get-GitRoot $fd))
+    }
+    if (-not (Test-Roblox $false)) { exit 0 }
     $msgs = @(); $lines = @(); $label = $fp; $isMcp = $false
     if ($tool -like 'mcp__*multi_edit*') {
       $isMcp = $true

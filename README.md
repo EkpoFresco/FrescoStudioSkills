@@ -6,13 +6,32 @@ Forked from [Claude Code Game Studios](https://github.com/Donchitos/Claude-Code-
 
 ## Install
 ```powershell
-git clone <this repo> rbx-studio
-cd rbx-studio
+git clone https://github.com/EkpoFresco/FrescoStudioSkills.git
+cd FrescoStudioSkills
 .\install.ps1          # Git Bash / macOS: ./install.sh
 ```
 Restart Claude Code, open a Roblox game folder, run `/rbx-start`. Details, update, uninstall: [docs/install.md](docs/install.md).
 
 Studio MCP (the default build path): Studio > Assistant > `...` > Manage MCP Servers > enable. Then `claude mcp add --scope user roblox-studio -- "%LOCALAPPDATA%\Roblox\mcp.bat"`.
+
+## Use it on an existing game
+Open Claude Code inside the game folder (not a parent folder), on a branch:
+```powershell
+git clone <GAME_REPO_URL> MyGame; cd MyGame
+git switch -c <initials>/chore-studio-setup
+claude
+```
+Then paste:
+```
+This is my existing Roblox game. Use rbx-studio (https://github.com/EkpoFresco/FrescoStudioSkills).
+1. Run /rbx-start existing. It must only add .rbx-studio/.
+2. Run /rbx-review all, /rbx-remote-audit all, /rbx-data-audit. Findings only, ranked; fix nothing yet.
+3. One DONE / YOU DO / RISKS / NEXT report with the top 5 fixes as proposed branch names.
+Local commits only; never push, open a PR, or merge to main until I say "approved, push".
+```
+Then one fix per branch: `/rbx-build <fix>`, `/rbx-ship`, "approved, push".
+
+New game instead: `/rbx-start new`, then `/rbx-concept brainstorm <theme>`.
 
 ## What it does
 - MCP first: builds, inspects, plays, and screenshots the game through Roblox Studio's built-in MCP server. Recommends Rojo + Git when the team needs it.

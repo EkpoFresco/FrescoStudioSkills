@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.1 (2026-11-04)
+- Fix: the push/PR gate and Luau write checks now follow the game folder a command actually targets (`cd Game && git push`, `git -C Game push`, an edited file's repo), not only the folder Claude Code started in. Approvals typed in a session started outside the game are kept session-wide. 6 new hook tests per shell (66/66 bash + pwsh 7, 33/33 Windows PowerShell 5.1).
+- README: real clone URL and an existing-game quickstart prompt.
+
 ## 2.1.0 (2026-11-04): token pass
 - `/rbx-map` + `tools/rbx-map.js` (and `rbx-map.luau` for MCP-only games): Roblox-aware project graph (scripts, requires, remotes fired -> handled, DataStore calls, purchases, hot paths). Built with zero model tokens, auto-refreshed at session start, read first by every code skill. Graphify supported as an optional extra.
 - `tools/lib.js`: read the research library by TL;DR and section instead of whole files.
