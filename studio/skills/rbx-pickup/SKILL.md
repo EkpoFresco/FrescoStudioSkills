@@ -9,9 +9,10 @@ allowed-tools: Read, Glob, Grep, Bash
 # /rbx-pickup
 
 ## 0. Relevance check
-No `.rbx-studio/`: say "not set up", recommend `/rbx-start`, stop. If `checkpoint.md` shows unfinished in-progress work from this machine's last session, recommend `/rbx-resume` first.
+No `.rbx-studio/`: `SKIPPED: not set up`, recommend `/rbx-start`. If `checkpoint.md` shows unfinished in-progress work from this machine's last session, recommend `/rbx-resume` first.
 
 ## 1. Read (cheap first)
+Conventions for branches, locks, and handoffs: `{{RBX_HOME}}/docs/team.md`.
 1. Newest 2 files in the handoffs dir (`paths.handoffs`).
 2. `.rbx-studio/checkpoint.md`, `.rbx-studio/backlog.md`, `.rbx-studio/locks.md`.
 3. `git fetch --quiet` (read-only) then `git log --oneline -15 --all --since="7 days ago"`, `git status --short`, current branch vs main (`git rev-list --left-right --count <main>...HEAD`).

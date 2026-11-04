@@ -12,6 +12,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Agent
 No `.rbx-studio/checkpoint.md` and no `.rbx-studio/state/`: `SKIPPED: nothing to resume`, suggest `/rbx-pickup`.
 
 ## 1. Read (in this order, nothing else yet)
+Protocol: `{{RBX_HOME}}/docs/survival.md`.
 1. `.rbx-studio/checkpoint.md` (goal, in progress, next 3, open decisions).
 2. `.rbx-studio/state/last-turn.txt`: if newer than the checkpoint, its changed files are unrecorded work.
 3. `.rbx-studio/state/auto-checkpoint.md` (written before compaction).

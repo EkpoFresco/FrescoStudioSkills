@@ -9,7 +9,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Agent
 # /rbx-first-60
 
 ## 0. Relevance check
-`review` needs a playable build (scripts exist in Studio or src/). None: switch to `design`. Default: `review` if playable, else `design`.
+The game has no player-facing start yet and no concept (pure backend or library work): `SKIPPED: no first minute to design`. `review` needs a playable build (scripts exist in Studio or src/); none: switch to `design`. Default: `review` if playable, else `design`.
 
 ## 1. Context
 `{{RBX_HOME}}/library/roblox/ux-standards.md` (First 60 seconds + Look check rubric), `{{RBX_HOME}}/library/roblox/genres/<genre>.md` (Session one), concept brief and loop notes in `.rbx-studio/reports/`. Why it matters: first-play bounce under 60 s and at 61-180 s is a top negative ranking signal (`discovery-algorithm.md`).

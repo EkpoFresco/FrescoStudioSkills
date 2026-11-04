@@ -15,6 +15,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Agent
 `gh issue list --repo <repo> --state open --limit 50 --json number,title,labels,assignees,updatedAt,body`. Read `.rbx-studio/backlog.md` and recent commits (`git log --oneline -30`) to find issues already fixed (`#N` in messages).
 
 ## 2. Triage (team-coordinator)
+Rules: `{{RBX_HOME}}/docs/team.md` (issues = stories, outward-facing writes).
 Per issue: type (bug, feature, chore), severity for bugs (BLOCKER data/money/crash, MAJOR, MINOR), player impact, size S/M/L, suggested owner agent. Duplicates and stale issues flagged.
 
 ## 3. Map

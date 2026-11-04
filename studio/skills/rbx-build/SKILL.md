@@ -9,7 +9,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Bash, PowerShell, Agent
 # /rbx-build
 
 ## 0. Relevance check
-No story id and no description: show the top 3 `todo` rows in `.rbx-studio/backlog.md` and stop. Story already `done`: say so and stop.
+No story id and no description: show the top 3 `todo` rows in `.rbx-studio/backlog.md` and stop (`SKIPPED: pick a story`). Story already `done`: `SKIPPED: S-NN is done`.
 
 ## 1. Ready check
 Load the story (backlog row or `.rbx-studio/stories/S-NN.md`). If it has no acceptance lines, write 2-4 now (observable or testable) and log it. Read `.rbx-studio/conventions.md`, `.rbx-studio/project.yaml` (toolchain, rigor), `.rbx-studio/locks.md`. Claim the modules you will touch in `locks.md` when `team_size > 1`; a module claimed by someone else: stop and report.
