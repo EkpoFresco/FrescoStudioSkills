@@ -2,6 +2,7 @@
 -- HUD: big rock button, rock counter, upgrade list, rebirth. Mobile-first (prototype pass).
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local GuiService = game:GetService("GuiService")
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
 
@@ -79,6 +80,7 @@ aspect.AspectRatio = 1
 aspect.Parent = rock
 corner(rock, 999)
 local stroke = Instance.new("UIStroke")
+stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border -- Contextual would outline the "BONK" text on a TextButton
 stroke.Thickness = 6
 stroke.Color = PALETTE.accent
 stroke.Parent = rock
@@ -134,13 +136,52 @@ rebirth.TextSize = 16
 rebirth.TextWrapped = true
 rebirth.Parent = gui
 corner(rebirth, 12)
+rebirth.Visible = false -- shown only when a rebirth would pay out
 rebirth.Activated:Connect(function()
 	Remotes.get("Rebirth"):FireServer()
 end)
 
+-- new-player cue: pulse the rock for the first 2 taps (skipped for returning players)
+local CUE_TAPS = 2
+local tapCount = 0
+local stateLoaded = false
+local cueTween: Tween? = nil
+
+local function stopCue()
+	if cueTween then
+		cueTween:Cancel()
+		cueTween = nil
+		stroke.Thickness = 6
+		stroke.Color = PALETTE.accent
+	end
+end
+
+local function startCue()
+	if cueTween or tapCount >= CUE_TAPS then
+		return
+	end
+	if GuiService.ReducedMotionEnabled then
+		stroke.Thickness = 12 -- static cue, no motion
+		stroke.Color = PALETTE.text
+		cueTween = TweenService:Create(stroke, TweenInfo.new(0), { Thickness = 12 })
+		return
+	end
+	local t =
+		TweenService:Create(stroke, TweenInfo.new(0.6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {
+			Thickness = 16,
+			Color = PALETTE.text,
+		})
+	cueTween = t
+	t:Play()
+end
+
 gui.Parent = player:WaitForChild("PlayerGui")
 
 rock.Activated:Connect(function()
+	tapCount += 1
+	if tapCount >= CUE_TAPS then
+		stopCue()
+	end
 	Remotes.get("Mine"):FireServer()
 	local t = TweenService:Create(rock, TweenInfo.new(0.08), { Size = UDim2.new(0.27, 0, 0.27, 0) })
 	t:Play()
@@ -151,6 +192,14 @@ end)
 
 Remotes.get("State").OnClientEvent:Connect(function(s)
 	state = s
+	if not stateLoaded then
+		stateLoaded = true
+		if (s.lifetime or 0) > 0 then
+			tapCount = CUE_TAPS -- returning player: no cue
+		else
+			startCue()
+		end
+	end
 end)
 
 -- redraw every frame
@@ -172,7 +221,9 @@ RunService.RenderStepped:Connect(function()
 		b.BackgroundColor3 = if state.rocks >= cost then Color3.fromRGB(60, 140, 90) else PALETTE.bg
 	end
 	local gain = Economy.rebirthGain(state.lifetime or 0, Config.RebirthRequirement)
-	hud:FindFirstChild("Rebirth").Text = if gain > (state.brainCells or 0)
-		then "BIG BRAIN\n+" .. (gain - state.brainCells) .. " cells"
-		else "Big Brain at\n" .. Economy.format(Config.RebirthRequirement)
+	local canRebirth = gain > (state.brainCells or 0)
+	rebirth.Visible = canRebirth
+	if canRebirth then
+		rebirth.Text = "BIG BRAIN\n+" .. (gain - state.brainCells) .. " cells"
+	end
 end)
