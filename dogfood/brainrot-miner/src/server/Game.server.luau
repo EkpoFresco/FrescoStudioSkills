@@ -32,11 +32,13 @@ local function boost(p: Data.Profile): number
 end
 
 local function snapshot(p: Data.Profile): Remotes.State
+	local perSecond = Economy.perSecond(Config.Upgrades, p.Levels)
 	return {
 		rocks = p.Rocks,
 		lifetime = p.Lifetime,
 		perClick = Economy.perClick(Config.Upgrades, p.Levels, Config.BaseClick),
-		perSecond = Economy.perSecond(Config.Upgrades, p.Levels),
+		perSecond = perSecond,
+		income = perSecond * Economy.multiplier(p.BrainCells, Config.BrainCellBonus, boost(p)),
 		brainCells = p.BrainCells,
 		levels = p.Levels,
 		boostEnds = p.BoostEnds,
@@ -197,12 +199,24 @@ MarketplaceService.ProcessReceipt = function(info)
 	return Enum.ProductPurchaseDecision.PurchaseGranted
 end
 
--- passive income tick
+-- Passive income tick. State is pushed on change (handlers above) and as a heartbeat for players
+-- with passive income; the client interpolates rocks between pushes using State.income.
+local sinceHeartbeat = 0
 while true do
-	task.wait(Config.TickSeconds)
+	local dt = task.wait(Config.TickSeconds)
+	sinceHeartbeat += dt
+	local beat = sinceHeartbeat >= Config.HeartbeatSeconds
+	if beat then
+		sinceHeartbeat = 0
+	end
 	for player, p in Data.all() do
-		local mult = Economy.multiplier(p.BrainCells, Config.BrainCellBonus, boost(p))
-		add(p, Economy.perSecond(Config.Upgrades, p.Levels) * mult * Config.TickSeconds)
-		push(player)
+		local perSecond = Economy.perSecond(Config.Upgrades, p.Levels)
+		if perSecond > 0 then
+			local mult = Economy.multiplier(p.BrainCells, Config.BrainCellBonus, boost(p))
+			add(p, perSecond * mult * dt)
+			if beat then
+				push(player)
+			end
+		end
 	end
 end

@@ -26,6 +26,8 @@ Config.BrainCellBonus = 0.10 -- +10% income per brain cell
 Config.OfflineCapSeconds = 2 * 60 * 60
 Config.OfflineRate = 0.5
 Config.TickSeconds = 0.1
+-- Passive-income players get a State push this often to correct client drift (boost expiry, etc.).
+Config.HeartbeatSeconds = 1
 
 -- Per-player remote rate limits: refill per second, burst size.
 Config.RateLimits = {

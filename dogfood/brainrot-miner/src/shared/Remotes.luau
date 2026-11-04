@@ -1,7 +1,8 @@
 --!strict
 -- Remote contract. Server creates the instances; clients wait for them.
 -- Mine (C->S): no args. BuyUpgrade (C->S): upgradeId: string, count: number. Rebirth (C->S): no args.
--- State (S->C): snapshot table { rocks, lifetime, perClick, perSecond, brainCells, levels, boostEnds }.
+-- State (S->C): snapshot table { rocks, lifetime, perClick, perSecond, income, brainCells, levels, boostEnds }.
+-- income = effective rocks/s (perSecond x multipliers); the client adds income x elapsed between pushes.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 export type State = {
@@ -9,6 +10,7 @@ export type State = {
 	lifetime: number,
 	perClick: number,
 	perSecond: number,
+	income: number,
 	brainCells: number,
 	levels: { [string]: number },
 	boostEnds: number,

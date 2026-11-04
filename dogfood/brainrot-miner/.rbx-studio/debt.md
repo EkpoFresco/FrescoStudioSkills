@@ -2,7 +2,7 @@
 
 | ID | Item | File | Score | Status |
 |---|---|---|---|---|
-| TD-001 | Full-state State push to every player every 0.1 s (N3, ~10 pkts/s/player). Push on change, interpolate passive income on client | src/server/Game.server.luau (tick loop) | 3 x 3 / 2 = 4.5 | open |
+| TD-001 | Full-state State push to every player every 0.1 s (N3, ~10 pkts/s/player). Push on change, interpolate passive income on client | src/server/Game.server.luau (tick loop) | 3 x 3 / 2 = 4.5 | done 2026-11-04 (9 -> 0 pkts/s idle, 9 -> 1 with income) |
 | TD-002 | Data.release drops the profile even if the final save failed; no retry budget, lock only expires after 180 s | src/server/Data.luau:121 | 4 x 1 / 2 = 2 | open (data path, needs owner approval) |
 | TD-003 | Data.load waits 2^attempt after the last failed try (8 s wasted), logs nil err when lock is held | src/server/Data.luau:85 | 1 x 4 / 1 = 1 | open |
 | TD-004 | Config.Products.RockRush.productId = 0, receipt path never fires | src/shared/Config.luau:31 | 4 x 4 / 1 = 16 | open, set real id before launch |

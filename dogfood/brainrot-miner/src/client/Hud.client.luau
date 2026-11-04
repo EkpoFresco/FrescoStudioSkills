@@ -17,7 +17,7 @@ local remoteRebirth = Remotes.get("Rebirth")
 local remoteState = Remotes.get("State")
 
 local state: Remotes.State =
-	{ rocks = 0, perClick = 1, perSecond = 0, brainCells = 0, levels = {}, lifetime = 0, boostEnds = 0 }
+	{ rocks = 0, perClick = 1, perSecond = 0, income = 0, brainCells = 0, levels = {}, lifetime = 0, boostEnds = 0 }
 
 local gui = Instance.new("ScreenGui")
 gui.Name = "Hud"
@@ -197,16 +197,22 @@ rock.Activated:Connect(function()
 	end)
 end)
 
--- Redraw only when a snapshot arrives; the state does not change between pushes.
+-- Server pushes on change plus a 1 Hz heartbeat; between pushes rocks grow by state.income x elapsed.
+local stateAt = os.clock()
+local function shownRocks(): number
+	return state.rocks + state.income * (os.clock() - stateAt)
+end
+
 local function render()
-	rocksLabel.Text = Economy.format(state.rocks) .. " Brain Rocks"
+	local rocks = shownRocks()
+	rocksLabel.Text = Economy.format(rocks) .. " Brain Rocks"
 	rateLabel.Text = Economy.format(state.perSecond) .. "/s  +" .. Economy.format(state.perClick) .. " per bonk"
 	for _, def in Config.Upgrades do
 		local b = upgradeButtons[def.id]
 		local owned = state.levels[def.id] or 0
 		local cost = Economy.costOf(def, owned)
 		b.Text = def.name .. " (" .. owned .. ")\n" .. Economy.format(cost) .. " rocks"
-		b.BackgroundColor3 = if state.rocks >= cost then Color3.fromRGB(60, 140, 90) else PALETTE.bg
+		b.BackgroundColor3 = if rocks >= cost then Color3.fromRGB(60, 140, 90) else PALETTE.bg
 	end
 	local gain = Economy.rebirthGain(state.lifetime, Config.RebirthRequirement)
 	local canRebirth = gain > state.brainCells
@@ -220,6 +226,7 @@ render()
 
 remoteState.OnClientEvent:Connect(function(s: Remotes.State)
 	state = s
+	stateAt = os.clock()
 	render()
 	if not stateLoaded then
 		stateLoaded = true
@@ -227,6 +234,16 @@ remoteState.OnClientEvent:Connect(function(s: Remotes.State)
 			tapCount = CUE_TAPS -- returning player: no cue
 		else
 			startCue()
+		end
+	end
+end)
+
+-- Passive income display: redraw at 10 Hz locally, no network.
+task.spawn(function()
+	while true do
+		task.wait(0.1)
+		if state.income > 0 then
+			render()
 		end
 	end
 end)
