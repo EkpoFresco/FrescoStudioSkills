@@ -8,5 +8,5 @@
 | TD-004 | Config.Products.RockRush.productId = 0, receipt path never fires | src/shared/Config.luau:31 | 4 x 4 / 1 = 16 | open, set real id before launch |
 | TD-005 | UpgradeDef type duplicated in Config.luau and Economy.luau | src/shared/Config.luau:4 | 1 x 4 / 1 = 1 | open |
 | TD-006 | 4 selene fromScale/fromOffset warnings in label() calls | src/client/Hud.client.luau:66 | 1 x 4 / 1 = 1 | open |
-| TD-007 | Two new Tweens per rock tap; reuse one tween pair | src/client/Hud.client.luau:193 | 1 x 4 / 2 = 2 | open, unmeasured (NOT ASSESSED) |
+| TD-007 | Two new Tweens per rock tap; reuse one tween pair | src/client/Hud.client.luau:187 | 1 x 4 / 2 = 2 | done 2026-11-04 (17.45 -> 1.71 ms / 2000 taps) |
 | TD-008 | Receipt: unknown ProductId returns NotProcessedYet forever (retry loop) | src/server/Game.server.luau (ProcessReceipt) | 2 x 3 / 1 = 6 | open |

@@ -184,17 +184,25 @@ end
 
 gui.Parent = player:WaitForChild("PlayerGui")
 
+-- tap squash: one reusable tween pair, created once (not per tap)
+local squashTween = TweenService:Create(rock, TweenInfo.new(0.08), { Size = UDim2.fromScale(0.27, 0.27) })
+local restoreTween = TweenService:Create(rock, TweenInfo.new(0.1), { Size = UDim2.fromScale(0.3, 0.3) })
+squashTween.Completed:Connect(function(playbackState: Enum.PlaybackState)
+	if playbackState == Enum.PlaybackState.Completed then
+		restoreTween:Play()
+	end
+end)
+
 rock.Activated:Connect(function()
 	tapCount += 1
 	if tapCount >= CUE_TAPS then
 		stopCue()
 	end
 	remoteMine:FireServer()
-	local t = TweenService:Create(rock, TweenInfo.new(0.08), { Size = UDim2.fromScale(0.27, 0.27) })
-	t:Play()
-	t.Completed:Connect(function()
-		TweenService:Create(rock, TweenInfo.new(0.1), { Size = UDim2.fromScale(0.3, 0.3) }):Play()
-	end)
+	-- cancel both: replaying a tween that is mid-play or finished strands the rock small on rapid taps
+	restoreTween:Cancel()
+	squashTween:Cancel()
+	squashTween:Play()
 end)
 
 -- Server pushes on change plus a 1 Hz heartbeat; between pushes rocks grow by state.income x elapsed.
