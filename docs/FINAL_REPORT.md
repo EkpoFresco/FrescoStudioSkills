@@ -7,7 +7,7 @@ DONE
 - studio/: 18 agents, 28 rbx-* skills, 7 path rules, CONTEXT.md, 7 support docs, 17 templates, 3 tools
 - hooks: studio/rbx-studio/hooks/rbx-hook.sh + rbx-hook.ps1 (7 events, silent outside Roblox folders)
 - install.ps1 / install.sh: install, -Update, -Uninstall, -Target sandbox; docs/install.md
-- docs/roblox/: 44 research files (11 topics + 32 genres + OPEN_QUESTIONS), sourced and dated
+- docs/roblox/: 45 research files (11 topics + MCP manifest + 32 genres + index + OPEN_QUESTIONS), sourced and dated
 - docs/audit/: REPO_AUDIT.md, ROBLOX_STUDIO_DESIGN.md, FRICTION.md (21 items); DECISIONS.md (D-001..D-019)
 - studio-tests/: 46 specs (28 skills, 18 agents), rubric, catalog; .claude/skills: /skill-test, /skill-improve
 - tools/: studio-lint.js, gen-catalog.js, test-hooks.sh, test-install.ps1, dump-mcp-manifest.js
