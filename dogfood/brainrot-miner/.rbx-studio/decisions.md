@@ -5,3 +5,4 @@
 
 - 2026-11-04 /rbx-first-60 design: wrote reports/first-60.md inline (no subagents). Hud read from code only, no playtest. Top fix: hide Rebirth button until it is unlockable.
 - 2026-11-04 /rbx-optimize: heartbeat 1 Hz only for players with perSecond > 0; idle players get no tick pushes. Studio place synced by pasting 4 files (HTTP disabled, left off).
+- 2026-11-04 /rbx-monetize design: light style, 4 offers (Rock Rush 25, Big Sack 99, Double Rocks 249, ad reward deferred). Design only; build waits for bounce gate. Bonuses add, not multiply. Report: .rbx-studio/reports/monetization.md
