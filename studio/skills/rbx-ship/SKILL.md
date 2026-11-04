@@ -25,7 +25,7 @@ Any failure: stop, report the blocker.
 3. Never merge. Merging to main is a separate approval.
 
 ## 3. Record
-Backlog rows to `review`. Release locks for shipped stories. Note the PR URL in `checkpoint.md`.
+Writes only inside `.rbx-studio/`: backlog rows to `review` (`.rbx-studio/backlog.md`), release locks for shipped stories (`.rbx-studio/locks.md`), PR URL in `.rbx-studio/checkpoint.md`. The PR body temp file goes in `.rbx-studio/state/`.
 
 ## Report
 Studio report shape only. No em dashes, no filler.
