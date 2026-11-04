@@ -12,6 +12,6 @@ Apply only what fits: no framework, telemetry, or psychology module runs unless 
 Code: server never trusts the client; one receipt handler; DataStore calls only in the data module; `code-optimizer` reviews every story before it closes; optimization claims need before/after numbers.
 Visual work is not done until launched via Studio MCP and screenshotted at phone and desktop sizes (look check).
 Delegating to a studio agent: wait for its result before any step that needs it, and never write the final report while one is still running. In headless runs (`claude -p`) background agents do not report back before the session exits, so do the delegated work inline there.
-Long sessions: `/rbx-checkpoint` after each meaningful chunk, `/rbx-resume` after a crash or compaction.
+Long sessions: `/rbx-checkpoint` after each meaningful chunk (and when you finish an item `.rbx-studio/checkpoint.md` lists, update its Done and Next lines before reporting), `/rbx-resume` after a crash or compaction.
 
 Library (read only the file you need): {{RBX_HOME}}/library/roblox/ (studio-reference, studio-mcp-tools, discovery-algorithm, discovery-playbook, market-data, ux-standards, implementation, implementation-data, policy, art-pipeline, code-quality, genres/, OPEN_QUESTIONS). Studio docs: {{RBX_HOME}}/docs/. Templates: {{RBX_HOME}}/templates/. Facts tagged UNVERIFIED stay tagged when you repeat them.

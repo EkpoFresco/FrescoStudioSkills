@@ -154,8 +154,10 @@ if ($Uninstall) {
   }
   Remove-EmptyParents @($man.Keys | Where-Object { $_ -notlike 'rbx-studio/*' })
   # restore files we displaced
+  $script:displaced = 0
   if (Test-Path -LiteralPath $RestoreList) {
     foreach ($l in Get-Content -LiteralPath $RestoreList) {
+      if ($l.Trim()) { $script:displaced++ }
       $parts = $l -split "`t"
       if ($parts.Count -ge 2 -and (Test-Path -LiteralPath $parts[1])) { Say "  restoring $($parts[0])"; if (-not $DryRun) { $rd = Join-Path $Target $parts[0]; New-Item -ItemType Directory -Force -Path (Split-Path -Parent $rd) | Out-Null; Copy-Item -LiteralPath $parts[1] -Destination $rd -Force } }
     }
@@ -178,7 +180,8 @@ if ($Uninstall) {
   if (-not $DryRun) {
     Remove-Item -LiteralPath $RbxDir -Recurse -Force
     $bk = Join-Path $Target 'rbx-studio-backups'
-    if ((Test-Path -LiteralPath $bk)) { Say "  backups kept at $bk (delete when you no longer need them)" }
+    if ($script:displaced -gt 0 -and (Test-Path -LiteralPath $bk)) { Say "  backups of your displaced files kept at $bk (delete when you no longer need them)" }
+    elseif (Test-Path -LiteralPath $bk) { Remove-Item -LiteralPath $bk -Recurse -Force }
   }
   Say "rbx-studio uninstalled from $Target"
   exit 0

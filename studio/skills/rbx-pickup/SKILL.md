@@ -23,7 +23,7 @@ Conventions for branches, locks, and handoffs: `{{RBX_HOME}}/docs/team.md`.
 Five lines max: what shipped recently, what is in progress and by whom (locks), what is blocked, what the newest handoff asks for, open BLOCKER issues. Then the single highest-leverage next move and the skill that does it.
 
 ## 3. Conflicts
-Flag: two locks on one module, stale locks (> 24 h), branch far behind main, a handoff that references work not in git (Studio-only edits: open the place to see them).
+When checkpoint, handoff, and git disagree, trust git (commits and their messages) and name the stale file. Flag: two locks on one module, stale locks (> 24 h), branch far behind main, a handoff that references work not in git (Studio-only edits: open the place to see them).
 
 ## Report
 Studio report shape only. No em dashes, no filler.
