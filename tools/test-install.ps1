@@ -24,7 +24,8 @@ Add-Content -LiteralPath (Join-Path $sb 'rbx-studio/manifest.txt') -Value ("skil
 $s = Get-Content -LiteralPath (Join-Path $sb 'settings.json') -Raw | ConvertFrom-Json
 Check 'stale skill from old version removed with its folder' (-not (Test-Path (Join-Path $sb 'skills/rbx-old')))
 Check 'agents installed (18 + user file replaced)' (@(Get-ChildItem (Join-Path $sb 'agents')).Count -eq 18)
-Check 'skills installed (28)' (@(Get-ChildItem (Join-Path $sb 'skills') -Directory).Count -eq 28)
+$wantSkills = @(Get-ChildItem (Join-Path $repo 'studio/skills') -Directory).Count
+Check "skills installed ($wantSkills)" (@(Get-ChildItem (Join-Path $sb 'skills') -Directory).Count -eq $wantSkills)
 Check 'rules installed (7)' (@(Get-ChildItem (Join-Path $sb 'rules')).Count -eq 7)
 Check 'library copied' (Test-Path (Join-Path $sb 'rbx-studio/library/roblox/genres/idle-clicker.md'))
 $left = @(Select-String -Path (Join-Path $sb 'agents/*.md'), (Join-Path $sb 'skills/*/SKILL.md'), (Join-Path $sb 'rules/*.md'), (Join-Path $sb 'rbx-studio/CONTEXT.md') -Pattern '\{\{RBX_HOME\}\}').Count
