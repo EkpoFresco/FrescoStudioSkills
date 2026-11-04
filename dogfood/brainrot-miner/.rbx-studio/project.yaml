@@ -1,0 +1,35 @@
+# rbx-studio per-game config. Docs: C:/Users/nsidi/.claude/rbx-studio/docs/config.md
+schema_version: 1
+studio_version: 2.0.0
+
+modes:
+  rigor: minimal            # minimal | standard | full
+
+roblox:
+  toolchain: hybrid           # mcp | rojo | hybrid | studio-only
+  genre: idle-clicker               # file stem in library/roblox/genres/ (e.g. idle-clicker)
+  target_devices: [phone, desktop, tablet, console]
+  monetization_style: light # none | light | standard | heavy
+  team_size: 1
+  analytics: false
+  universe_id: ""
+  place_ids: []
+
+paths:
+  server: src/server
+  client: src/client
+  shared: src/shared
+  data_module: src/server/Data         # e.g. src/server/Data or ServerScriptService.Data
+  receipt_handler: src/server/Game.server.luau
+  handoffs: .rbx-studio/handoffs
+
+remotes:
+  guard_words: []           # extra words that count as validation for the commit hook
+
+git:
+  main_branch: main
+  local_commits: true
+  push_requires_approval: true
+
+team:
+  github_repo: ""           # owner/name
