@@ -19,8 +19,10 @@ end
 -- Cost to buy `count` more levels starting at `owned`.
 function Economy.bulkCost(def: UpgradeDef, owned: number, count: number): number
 	local total = 0
-	for i = 0, count - 1 do
-		total += Economy.costOf(def, owned + i)
+	local price = def.baseCost * def.growth ^ owned
+	for _ = 1, count do
+		total += math.floor(price)
+		price *= def.growth
 	end
 	return total
 end

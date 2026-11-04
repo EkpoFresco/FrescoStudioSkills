@@ -22,6 +22,20 @@ for i = 0, 9 do
 	sum += Economy.costOf(pick, 3 + i)
 end
 eq("bulk 10 = sum of costOf", Economy.bulkCost(pick, 3, 10), sum)
+-- bulkCost must match the sum of costOf exactly while totals stay below 1e14 (float noise starts near 4e14)
+local mismatches = 0
+for owned = 0, 600 do
+	for _, count in { 1, 2, 10, 37, 100 } do
+		local want = 0
+		for i = 0, count - 1 do
+			want += Economy.costOf(pick, owned + i)
+		end
+		if want < 1e14 and Economy.bulkCost(pick, owned, count) ~= want then
+			mismatches += 1
+		end
+	end
+end
+eq("bulk exact below 1e14", mismatches, 0)
 eq("perClick base", Economy.perClick({ pick }, {}, 1), 1)
 eq("perClick 3 picks", Economy.perClick({ pick }, { bonkPick = 3 }, 1), 4)
 eq("perSecond", Economy.perSecond({ pick, helper }, { snorblet = 5 }), 5)
