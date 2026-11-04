@@ -16,7 +16,7 @@ From the story acceptance lines (or the backlog's done stories since the last pl
 
 ## 2. Run
 Delegate to `qa-playtester` with the plan and `{{RBX_HOME}}/docs/look-check.md`. It must: `get_studio_state`, start play, read the console, drive each step, confirm effects on the Server datamodel with `execute_luau` (not just visuals), capture desktop and phone per key state, save evidence to `.rbx-studio/evidence/playtest-<date>/`, stop play.
-`--soak`: 10+ minutes; sample `collectgarbage("count")`, instance count, and memory every minute; a steady climb over 5 samples is a leak finding for `code-optimizer`.
+Competitive or physics-heavy games: add one run under the MCP skill `rbx-network-simulator` (high latency). `--soak`: 10+ minutes; sample `collectgarbage("count")`, instance count, and memory every minute; a steady climb over 5 samples is a leak finding for `code-optimizer`.
 
 ## 3. Judge
 `ux-mobile-designer` checks captures against the Look check rubric (`{{RBX_HOME}}/library/roblox/ux-standards.md`). Bugs ranked by severity with repro steps.

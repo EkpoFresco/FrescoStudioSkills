@@ -18,6 +18,7 @@ Write the questions first (from the request, the concept kill criteria, or the w
 `analytics-engineer` writes `.rbx-studio/reports/telemetry.md`: per question, the event(s) (built-in first: onboarding funnel, funnel, economy; custom last), when each fires, fields, the dashboard page where the answer appears, and the decision it drives.
 
 ## 3. Add (`add`)
+With Studio MCP, load the built-in MCP skills first (`skill` tool): `rbx-instrument-analytics` for event wiring and `rbx-configs-experimentation` for Configs and Experiments.
 One server Analytics module wrapping the calls; call sites only on the server; stable low-cardinality names; no personal data. Then `/rbx-build`-style close: `code-optimizer` review.
 
 ## 4. Experiment (`experiment`)

@@ -1,7 +1,7 @@
 # Roblox Studio MCP: Tool Manifest
 
 Source: built-in Studio MCP server (StudioMCP.exe, shipped with Roblox Studio), tool cache at `%LOCALAPPDATA%RobloxStudioMCP	ools-cache.json`.
-Cache written by Studio on 2026-10-17. Checked 2026-11-03. Tool count: 27.
+Cache written by Studio on 2026-11-04. Checked 2026-11-03. Tool count: 32.
 Launch command Studio registers: `%LOCALAPPDATA%Robloxmcp.bat` (wraps `Versions<ver>StudioMCP.exe`).
 This file is generated verbatim from the cache. Re-generate after Studio updates: `node tools/dump-mcp-manifest.js`.
 
@@ -13,28 +13,33 @@ This file is generated verbatim from the cache. Re-generate after Studio updates
 | `search_game_tree` | datamodel_type, head_limit, instance_type, keywords, max_depth, path |
 | `script_search` | keywords |
 | `skill` | skill_name |
+| `subagent` | description, subagent_type, task |
 | `multi_edit` | className, datamodel_type, edits, file_path |
-| `start_stop_play` | is_start |
+| `execute_luau` | code, datamodel_type |
 | `get_console_output` |  |
 | `user_mouse_input` | actions, datamodel_type |
+| `auto_setup_avatar` | align_front_angle, classifications, decal_to_dynamic_head, enable_additional_head_processing, instance_path, r15_plus, reduce_triangles, setup_type |
 | `store_image` | filePath |
 | `http_get` | context_lines, query, return_full, url |
 | `character_navigation` | datamodel_type, instance_path, speed_multiplier, x, y, z |
 | `script_read` | end_line_one_indexed_inclusive, should_read_entire_file, start_line_one_indexed, target_file |
-| `get_studio_state` |  |
 | `screen_capture` | camera_position, capture_id, look_at_position |
+| `get_studio_state` |  |
+| `generate_scene` | boundingBoxPosition, boundingBoxSize, images, textPrompt |
+| `start_stop_play` | is_start |
 | `script_grep` | query |
 | `wait_job_finished` | jobId, timeout |
 | `generate_procedural_model` | async, attachedImageUri, partNames, prompt, segmentation |
-| `generate_texture` | hintImage, instance_path, model, textPrompt |
-| `segment_mesh` | instance_path, parts |
 | `user_keyboard_input` | actions, datamodel_type |
+| `generate_texture` | hintImage, instance_path, model, textPrompt |
+| `list_skills` |  |
+| `segment_mesh` | instance_path, parts |
+| `create_skill` | skill_body, skill_description, skill_name |
 | `generate_mesh` | async, maxTriangles, partNames, segmentation, size, textPrompt |
-| `subagent` | description, subagent_type, task |
-| `execute_luau` | code, datamodel_type |
 | `generate_material` | async, baseMaterial, materialDescription, materialId, materialPattern |
 | `inspect_instance` | path |
 | `search_asset` | assetType, audioMaxDuration, audioMinDuration, excludeSources, facets, groupId, groupName, includeSources, maxPriceCents, maxResults, minPriceCents, priceFilter, query, scope, tags, verifiedCreatorsOnly |
+| `edit_skill` | new_description, new_name, new_skill_body, skill_name |
 | `insert_asset` | assetId, assetName, assetType, parentPath |
 
 Every tool also takes optional `studio_id` (target a specific open Studio window).
@@ -114,6 +119,11 @@ Skills provide domain-specific expertise that helps you produce better, more acc
 
 <available_skills>
   <skill>
+    <name>rbx-configs-experimentation</name>
+    <source>Roblox</source>
+    <description>"IMPORTANT: Before writing hard-coded constants, using DataStores for simple tunable values, or suggesting a manual server restart to change a value — call this skill. Roblox's built-in ConfigService updates in-game values live without restarting servers and runs A/B experiments to measure impact on retention, engagement, and monetization. Use it to set up, integrate, debug, and optimize Experience Configs and experiments. Trigger when the creator wants to change game values without a restart (boss health, prices, drop rates, event timing, difficulty), add feature flags or toggles, run A/B tests or experiments, build live-ops or seasonal/timed content, tune balance across the player base, or mentions ConfigService, GetConfigAsync, or GetConfigForPlayerAsync."</description>
+  </skill>
+  <skill>
     <name>rbx-create-skill</name>
     <source>Roblox</source>
     <description>Guide the user through authoring or modifying a custom skill. Use when the user wants to create, edit, update, or rename a skill.</description>
@@ -132,6 +142,16 @@ Skills provide domain-specific expertise that helps you produce better, more acc
     <name>rbx-docs-search</name>
     <source>Roblox</source>
     <description>Look up Roblox documentation using the http_get tool — Engine API reference, creator guides (avatar, characters, Studio workflows), cloud API, and docs indexes. Use when you need accurate API details or how-to guidance.</description>
+  </skill>
+  <skill>
+    <name>rbx-instrument-analytics</name>
+    <source>Roblox</source>
+    <description>Audit a Roblox experience for analytics-instrumentation opportunities and add Economy, Funnel, and Custom events via AnalyticsService. Supports a read-only audit that proposes an event plan and an instrument mode that creates a centralized analytics module and edits scripts to log events at the right places.</description>
+  </skill>
+  <skill>
+    <name>rbx-network-simulator</name>
+    <source>Roblox</source>
+    <description>Simulate, emulate, or throttle network conditions in Roblox Studio — latency, ping, jitter, and packet loss — for playtesting. ALWAYS use this skill when the user says things like "simulate 4G/3G/5G/Wi-Fi", "test on a slow/laggy/bad connection", "add latency/ping", "throttle the network", "network throttling", "packet loss", "high ping", "how does my game feel on a bad connection", "measure input delay / responsiveness", "how long until the server catches up", "client-server desync", "hits not registering", "slow join / long loading on mobile", "rubber-banding", or names a preset (Ideal Fiber, Wired, Home Wi-Fi, 4G/LTE, 3G). This skill is self-contained — the complete API and preset values are here; apply via settings().Network directly. It drives `settings().Network` via execute_luau (apply/verify) and measures real ping, action→result response time, server catch-up, and client-server consistency in a playtest — this works with or without any beta. Recommend enabling the "New Device Simulator" beta for the optional toolbar UI (`settings().Network` is always available regardless).</description>
   </skill>
   <skill>
     <name>rbx-perf-profiling</name>
@@ -162,7 +182,43 @@ Important:
 
 | Param | Type | Req | Notes |
 |---|---|---|---|
-| skill_name | string | yes | The name of the skill to retrieve. Options: rbx-create-skill, rbx-debug, rbx-device-simulator-lua, rbx-docs-search, rbx-perf-profiling, rbx-scene-analysis, rbx-unit-test |
+| skill_name | string | yes | The name of the skill to retrieve. Options: rbx-configs-experimentation, rbx-create-skill, rbx-debug, rbx-device-simulator-lua, rbx-docs-search, rbx-instrument-analytics, rbx-network-simulator, rbx-perf-profiling, rbx-scene-analysis, rbx-unit-test |
+
+### `subagent`
+
+Launch a specialized subagent to handle complex, multi-step tasks autonomously.
+Subagents are independent AI assistants with restricted tool access and specialized instructions.
+
+<available_subagents>
+  <subagent>
+    <name>explore</name>
+    <description>Fast agent specialized for exploring codebases and searching for information. Use this when you need to:
+- Find files by patterns (e.g., "scripts with 'player' in the name")
+- Search code for keywords or patterns (e.g., "how are touch events handled?")
+- Answer questions about the codebase structure
+- Query the current game state via Luau execution
+- Understand existing game architecture before making changes
+- Gather context from multiple files before deciding on an approach</description>
+  </subagent>
+</available_subagents>
+
+When to use subagents:
+1. When you need to explore the codebase before making decisions
+2. When a task requires multiple search/read steps across many files
+3. When you're uncertain about the right approach and need autonomous investigation
+4. To separate concerns (e.g., explore first, then modify)
+
+Important:
+1. Subagents return a final text result summarizing their work
+2. You cannot have a back-and-forth conversation with a subagent
+3. Subagents cannot spawn other subagents (no nesting)
+4. Choose the most specific subagent for your task
+
+| Param | Type | Req | Notes |
+|---|---|---|---|
+| description | string | yes | A short 3-5 word description of the task in present continuous tense (e.g., 'Exploring player spawn logic', 'Finding lighting scripts'). Used for display. |
+| subagent_type | string | yes | The type of subagent to invoke. Options: explore, screen_capture, unit_test |
+| task | string | yes | Detailed task description and instructions for the subagent. Be specific about what you need the subagent to do and what information to return. |
 
 ### `multi_edit`
 
@@ -209,13 +265,16 @@ When Making Edits:
 | edits | array | yes | An array of edit operations. For new scripts, first edit can have empty old_string to set initial content. |
 | file_path | string | yes | The dot-notation path of the script (e.g., 'game.ServerScriptService.MyScript'). Will be created if it doesn't exist. |
 
-### `start_stop_play`
+### `execute_luau`
 
-Start play the game or stop the play.
+Executes Luau code in Roblox Studio. Returns the result of the executed code or an error message if the code fails to execute.
+
+Code runs on Studio's main thread; until it yields, Studio is frozen, the script can't be stopped, and the MCP connection may drop. For heavy work (bulk instance creation or edits, procedural or terrain generation, large loops), split it into logical chunks (e.g. per region, or batches of ~1000 items) and call `task.wait()` once per chunk, not per item. When creating many instances, build each chunk in a container outside the DataModel and parent it before that chunk's `task.wait()`. The cost of a .Parent write into the DataModel scales with the total size of the subtree being inserted (all descendants), so parenting one large container is itself a single unyielding operation that can freeze Studio or drop the connection, no matter how incrementally the container was built. Keeping each flushed subtree small (one chunk's worth) bounds the cost of every .Parent write. A loop that waits for state to change (e.g. `while not ready do`) must call `task.wait()` inside it.
 
 | Param | Type | Req | Notes |
 |---|---|---|---|
-| is_start | boolean | yes | true to start the game, false to stop the game and return to edit mode. |
+| code | string | yes | The Luau code to execute. |
+| datamodel_type | string: Edit / Client / Server | yes | The target datamodel to operate on, the tool can only be performed in those datamodel types. call get_studio_state to get current available datamodel types. if the target datamodel is not available in current mode, consider using start_stop_play to switch to the desired mode and then use the tools. This is a required argument. |
 
 ### `get_console_output`
 
@@ -230,6 +289,24 @@ Send one or more mouse actions in order: moveTo, mouseButtonDown, mouseButtonUp,
 |---|---|---|---|
 | actions | array | yes | Ordered list of mouse actions to perform. |
 | datamodel_type | string: Client | yes | The target datamodel to operate on, the tool can only be performed in those datamodel types. call get_studio_state to get current available datamodel types. if the target datamodel is not available in current mode, consider using start_stop_play to switch to the desired mode and then use the tools. This is a required argument. |
+
+### `auto_setup_avatar`
+
+Rig a static Workspace Model as an R15 avatar and place the result beside it.
+Pass `instance_path` whenever the Model is known; omit it only to use the
+user's single selected Model. Do not set Selection with execute_luau.
+Usually takes 3-5 minutes.
+
+| Param | Type | Req | Notes |
+|---|---|---|---|
+| align_front_angle | boolean |  | Fix the front to negative Z. Defaults to false, which lets the engine infer it. Use true for ambiguous models that already face negative Z. |
+| classifications | array |  | Labels for Models and BaseParts under the input. A Model covers every BasePart inside it. Omit to let the engine decide. Unlisted parts become Body; an R15 body with a Humanoid is skipped. |
+| decal_to_dynamic_head | boolean |  | Create a dynamic head from a 2D face Decal or texture. Defaults to false. |
+| enable_additional_head_processing | boolean |  | Align the head cage to facial features for a better makeup fit. Defaults to true. |
+| instance_path | string |  | Workspace path to the input Model, preferably from inspect_instance. Pass it whenever known; omit only for the user's single selected Model. |
+| r15_plus | boolean |  | Add optional upper-torso, neck, hand, and foot joints for more articulation. Defaults to false. |
+| reduce_triangles | boolean |  | Development only: reduce triangles for validation. Defaults to false. Omit for Platform, which always reduces them. |
+| setup_type | string: Platform / Development |  | "Platform" (default) creates marketplace-compatible avatars. "Development" creates experience-only characters such as NPCs. |
 
 ### `store_image`
 
@@ -314,11 +391,6 @@ Path Format:
 | start_line_one_indexed | integer |  | The one-indexed line number to start reading from (inclusive). Required if should_read_entire_file is false. |
 | target_file | string | yes | The dot-notation path of the script to read (e.g., 'game.ServerScriptService.MyScript') |
 
-### `get_studio_state`
-
-Get the state of the studio, including current play state and available datamodel types. If the studio state is not expected, please call start_stop_play tool to start or stop the play.
-
-
 ### `screen_capture`
 
 Capture current edit-time screen, return the image data. If camera_position and look_at_position are provided, the camera will be temporarily set to the camera_position and look at the look_at_position.
@@ -328,6 +400,30 @@ Capture current edit-time screen, return the image data. If camera_position and 
 | camera_position | array |  | The position of the camera to capture the screen from. |
 | capture_id | string | yes | Capture identifier such as 'ScreenCapture_1', 'ScreenCapture_2', etc. |
 | look_at_position | array |  | The position to look at. |
+
+### `get_studio_state`
+
+Get the state of the studio, including current play state and available datamodel types. If the studio state is not expected, please call start_stop_play tool to start or stop the play.
+
+
+### `generate_scene`
+
+Generates a scene of models and parts from a text prompt and/or reference images, placed within an optional bounding box, and runs the generated script in the DataModel.
+
+| Param | Type | Req | Notes |
+|---|---|---|---|
+| boundingBoxPosition | object |  | World-space position of the area to generate the scene in. |
+| boundingBoxSize | object |  | Size (in studs) of the area to generate the scene in. |
+| images | array |  | Reference images that guide the scene. Each is an image content object ({ type = "image", data = <base64>, mimeType = <e.g. "image/png"> }) or the URI of an attached image. Either this or textPrompt must be provided. |
+| textPrompt | string |  | Text description of the desired scene. Either this or images must be provided. |
+
+### `start_stop_play`
+
+Start play the game or stop the play.
+
+| Param | Type | Req | Notes |
+|---|---|---|---|
+| is_start | boolean | yes | true to start the game, false to stop the game and return to edit mode. |
 
 ### `script_grep`
 
@@ -375,6 +471,15 @@ CRITICAL: This is a long-running generative tool. Default to calling it with the
 | prompt | string | yes | A text description of what to create and what attributes to expose. Pass the user's own words. If they mention specific configurable properties (e.g. "head size", "arm length", "wheel count"), include those in the prompt so the generated model exposes them as editable attributes. If an image is attached and the user gave no text description, pass an empty string. Do NOT describe or interpret the attached image — only pass the user's own words.  |
 | segmentation | string: auto / none / explicit |  | Controls how the model is broken into parts. Pick based on the user's wording: - Omit (or "auto"): user did NOT mention parts/segmentation (e.g. "generate a car"). The tool will derive parts automatically via an internal LLM call. - "none": user explicitly asked for no parts / a single piece (e.g. "generate a car with no parts", "as one mesh", "single piece"). - "explicit": user named specific parts (e.g. "a car with body and wheels"). You MUST also pass partNames with the user's listed parts (max 8).  |
 
+### `user_keyboard_input`
+
+Send one or more keyboard inputs to the game in order. Each step is keyDown, keyUp, keyPress (keyDown then keyUp), textInput, or wait.
+
+| Param | Type | Req | Notes |
+|---|---|---|---|
+| actions | array | yes | Ordered list of keyboard actions to perform. |
+| datamodel_type | string: Client | yes | The target datamodel to operate on, the tool can only be performed in those datamodel types. call get_studio_state to get current available datamodel types. if the target datamodel is not available in current mode, consider using start_stop_play to switch to the desired mode and then use the tools. This is a required argument. |
+
 ### `generate_texture`
 
 Re-textures an existing mesh using AI, given a text prompt describing the desired look. Requires a source MeshPart or Model. Replaces the source in place.
@@ -383,8 +488,13 @@ Re-textures an existing mesh using AI, given a text prompt describing the desire
 |---|---|---|---|
 | hintImage | object |  | Optional reference image guiding the texture style. When provided, textPrompt may be an empty string. |
 | instance_path | string |  | Full Studio path to the source MeshPart or Model, e.g. "Workspace.Model1.Part2". Resolved directly — no live Studio selection required. If omitted, falls back to the current Studio selection (which must be exactly one MeshPart or Model). |
-| model | string: Fast / Quality |  | Generation mode. "Fast" trades quality for speed. "Quality" (default) is a research preview that only supports a single-MeshPart source and can vary in results. |
+| model | string: Fast / Quality |  | Generation mode. "Fast" (default) trades quality for speed. "Quality" is a research preview and can vary in results; it first generates a reference image from an automatically selected view, so it takes longer. |
 | textPrompt | string | yes | Text description of the desired texture/appearance, e.g. "rusty metal". |
+
+### `list_skills`
+
+Lists every available skill with its source and a description of when to use it. Call this before starting a task to find skills that cover it, then load one with skill.
+
 
 ### `segment_mesh`
 
@@ -395,14 +505,15 @@ Segments an existing mesh into named sub-parts using AI. Requires a source MeshP
 | instance_path | string |  | Full Studio path to the source MeshPart or Model, e.g. "Workspace.Model1.Part2". Resolved directly — no live Studio selection required. If omitted, falls back to the current Studio selection (which must be exactly one MeshPart or Model). |
 | parts | array | yes | List of part names to segment the mesh into (max 5). Example: ["head", "body", "tail"]. |
 
-### `user_keyboard_input`
+### `create_skill`
 
-Send one or more keyboard inputs to the game in order. Each step is keyDown, keyUp, keyPress (keyDown then keyUp), textInput, or wait.
+Create a new custom skill. The skill will be published and immediately available to the assistant.
 
 | Param | Type | Req | Notes |
 |---|---|---|---|
-| actions | array | yes | Ordered list of keyboard actions to perform. |
-| datamodel_type | string: Client | yes | The target datamodel to operate on, the tool can only be performed in those datamodel types. call get_studio_state to get current available datamodel types. if the target datamodel is not available in current mode, consider using start_stop_play to switch to the desired mode and then use the tools. This is a required argument. |
+| skill_body | string | yes | The markdown body content — instructions the agent follows when the skill is invoked. |
+| skill_description | string | yes | One-line description of what the skill does and when to use it. Written in third person. |
+| skill_name | string | yes | Unique name for the skill. Lowercase letters, numbers, underscores, dashes only. Cannot start with 'rbx-'. |
 
 ### `generate_mesh`
 
@@ -416,53 +527,6 @@ Generates a textured mesh from a prompt using AI.
 | segmentation | string: auto / none / explicit |  | Controls how the mesh is broken into parts. Pick based on the user's wording: - Omit (or "auto"): user did NOT mention parts/segmentation (e.g. "generate a car"). The tool will derive parts automatically via an internal LLM call. - "none": user explicitly asked for no parts / a single piece (e.g. "generate a car with no parts", "as one mesh", "single piece"). - "explicit": user named specific parts (e.g. "a car with body and wheels"). You MUST also pass partNames with the user's listed parts (max 8).  |
 | size | object |  | The generation's bounding box size. The generation will try to fit within this volume. Try to approximate a good size based on textPrompt. |
 | textPrompt | string | yes | The text prompt describing the mesh to generate. |
-
-### `subagent`
-
-Launch a specialized subagent to handle complex, multi-step tasks autonomously.
-Subagents are independent AI assistants with restricted tool access and specialized instructions.
-
-<available_subagents>
-  <subagent>
-    <name>explore</name>
-    <description>Fast agent specialized for exploring codebases and searching for information. Use this when you need to:
-- Find files by patterns (e.g., "scripts with 'player' in the name")
-- Search code for keywords or patterns (e.g., "how are touch events handled?")
-- Answer questions about the codebase structure
-- Query the current game state via Luau execution
-- Understand existing game architecture before making changes
-- Gather context from multiple files before deciding on an approach</description>
-  </subagent>
-</available_subagents>
-
-When to use subagents:
-1. When you need to explore the codebase before making decisions
-2. When a task requires multiple search/read steps across many files
-3. When you're uncertain about the right approach and need autonomous investigation
-4. To separate concerns (e.g., explore first, then modify)
-
-Important:
-1. Subagents return a final text result summarizing their work
-2. You cannot have a back-and-forth conversation with a subagent
-3. Subagents cannot spawn other subagents (no nesting)
-4. Choose the most specific subagent for your task
-
-| Param | Type | Req | Notes |
-|---|---|---|---|
-| description | string | yes | A short 3-5 word description of the task in present continuous tense (e.g., 'Exploring player spawn logic', 'Finding lighting scripts'). Used for display. |
-| subagent_type | string | yes | The type of subagent to invoke. Options: explore, screen_capture, unit_test |
-| task | string | yes | Detailed task description and instructions for the subagent. Be specific about what you need the subagent to do and what information to return. |
-
-### `execute_luau`
-
-Executes Luau code in Roblox Studio. Returns the result of the executed code or an error message if the code fails to execute.
-
-Code runs on Studio's main thread; until it yields, Studio is frozen, the script can't be stopped, and the MCP connection may drop. For heavy work (bulk instance creation or edits, procedural or terrain generation, large loops), split it into logical chunks (e.g. per region, or batches of ~1000 items) and call `task.wait()` once per chunk, not per item. When creating many instances, build each chunk in a container outside the DataModel and parent it before that chunk's `task.wait()`. The cost of a .Parent write into the DataModel scales with the total size of the subtree being inserted (all descendants), so parenting one large container is itself a single unyielding operation that can freeze Studio or drop the connection, no matter how incrementally the container was built. Keeping each flushed subtree small (one chunk's worth) bounds the cost of every .Parent write. A loop that waits for state to change (e.g. `while not ready do`) must call `task.wait()` inside it.
-
-| Param | Type | Req | Notes |
-|---|---|---|---|
-| code | string | yes | The Luau code to execute. |
-| datamodel_type | string: Edit / Client / Server | yes | The target datamodel to operate on, the tool can only be performed in those datamodel types. call get_studio_state to get current available datamodel types. if the target datamodel is not available in current mode, consider using start_stop_play to switch to the desired mode and then use the tools. This is a required argument. |
 
 ### `generate_material`
 
@@ -633,6 +697,17 @@ Each result includes a thumbnailUrl (Roblox Thumbnails API). Fetch it to get JSO
 | scope | string: auto / creator_store / user / group / universe |  | Where to search. 'auto' (default) waterfalls through all available sources. Use explicit scope to target a single source. |
 | tags | array |  | Tags to filter by (Creator Store only, ignored for inventory scopes). Tags are category labels like 'Vehicle', 'Airplane', 'Fantasy'. |
 | verifiedCreatorsOnly | boolean |  | Only return results from verified creators (Creator Store only). |
+
+### `edit_skill`
+
+Edit an existing user skill. Can update the name, description, and/or body. Only user-created skills can be edited.
+
+| Param | Type | Req | Notes |
+|---|---|---|---|
+| new_description | string |  | New one-line description for the skill. Omit to keep current description. |
+| new_name | string |  | New name for the skill. Lowercase letters, numbers, underscores, dashes only. Cannot start with 'rbx-'. Omit to keep current name. |
+| new_skill_body | string |  | New markdown body content for the skill. This replaces the entire body. Omit to keep current body. |
+| skill_name | string | yes | The current name of the skill to edit. |
 
 ### `insert_asset`
 

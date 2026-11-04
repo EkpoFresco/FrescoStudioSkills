@@ -18,6 +18,7 @@ No playable build and no scripts: `SKIPPED: nothing to measure`. No Studio MCP: 
 Delegate to `code-optimizer`:
 - Play, warm up 30 s, then sample 3 times: frame time and top labels via MCP skill `rbx-perf-profiling` (`skill` tool, LibMP), memory via `execute_luau` (`Stats`, `collectgarbage("count")`), instance and part counts, network in/out.
 - Scene: MCP skill `rbx-scene-analysis` (rendering, memory, unparented instances, asset sizes).
+- Network: MCP skill `rbx-network-simulator` to add latency or loss and confirm remotes and UI tolerate it.
 - Phone profile: repeat the frame sample with the Device Simulator on a low-end phone.
 Record median of 3 per metric with the method.
 

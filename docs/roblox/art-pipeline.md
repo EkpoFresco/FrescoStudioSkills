@@ -388,3 +388,8 @@ Mapping rules for step 3 and 5:
 [48] RobloxPlugin-FigmaToRoblox (GitHub, Rawblocky, archived) - https://github.com/Rawblocky/RobloxPlugin-FigmaToRoblox - checked 2026-11-03
 [49] GitHub topic figma-to-roblox (RbxUiStudio) - https://github.com/topics/figma-to-roblox - checked 2026-11-03
 [50] Optimize your experience (environmental art curriculum) - https://create.roblox.com/docs/tutorials/curriculums/environmental-art/optimize-your-experience - checked 2026-11-03
+
+## Update 2026-11-04 (Studio build that shipped today)
+- New MCP tools on this machine after the Studio update: `generate_scene` (text or reference images to a scene of models and parts inside an optional bounding box; runs the generated script in the DataModel), `auto_setup_avatar`, `list_skills`, `create_skill`, `edit_skill`. Source: local `tools-cache.json` regenerated into `studio-mcp-tools.md`, checked 2026-11-04.
+- New built-in MCP skills: `rbx-instrument-analytics`, `rbx-configs-experimentation`, `rbx-network-simulator`.
+- `generate_scene` limits and quotas: UNVERIFIED (not documented in the tool text). Verify by running it once on a test place and reading the result and any quota error.
