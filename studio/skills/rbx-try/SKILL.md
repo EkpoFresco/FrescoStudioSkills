@@ -8,7 +8,11 @@ allowed-tools: Read, Glob, Grep, Bash, PowerShell
 
 # /rbx-try
 
-Tool: `{{RBX_HOME}}/tools/rbx-try.ps1` (run from the game folder with `powershell -NoProfile -ExecutionPolicy Bypass -File`). It never commits, merges or pushes, and never touches the working copy or its branch. Each tried branch lives in a detached worktree under `%USERPROFILE%\.rbx-try\<game>\<branch>`, with its own copy of every place file, so saving in Studio there cannot change the real game folder.
+Try a teammate's branch in Studio without merging it or touching your files.
+
+How it works: each branch gets its own throwaway copy (a git worktree) under `%USERPROFILE%\.rbx-try\<game>\<branch>`, and Rojo serves that copy to Studio. Saving in Studio there never changes the real game folder. It never commits, merges or pushes.
+
+Tool: `{{RBX_HOME}}/tools/rbx-try.ps1`, run from the game folder with `powershell -NoProfile -ExecutionPolicy Bypass -File`.
 
 ## 0. Relevance check
 - Not a git repo, or no `*.project.json`: the tool prints `SKIPPED: ...`; report it and stop. Suggest `/rbx-toolchain rojo` for a Studio-only game.

@@ -1,58 +1,56 @@
-# rbx-studio
+# FrescoStudioSkills
 
-A Claude Code studio for Roblox games. 18 agents, 29 skills, 7 path rules, 7 hooks, and a cited Roblox research library. Installs once, works in any Roblox game folder, writes only `.rbx-studio/` there.
+A Roblox game studio inside Claude Code. You type a command like `/rbx-build`, and a team of specialist helpers plans, codes, tests and reviews it in your game.
 
-Forked from [Claude Code Game Studios](https://github.com/Donchitos/Claude-Code-Game-Studios) v1.2.0 and rebuilt for Roblox only. Every other engine set was removed.
+Install it once. It works in any Roblox game folder and only ever adds one folder there: `.rbx-studio/`.
 
-## Install
-```powershell
-git clone https://github.com/EkpoFresco/FrescoStudioSkills.git
-cd FrescoStudioSkills
-.\install.ps1          # Git Bash / macOS: ./install.sh
-```
-Restart Claude Code, open a Roblox game folder, run `/rbx-start`. Details, update, uninstall: [docs/install.md](docs/install.md).
+## Setup (5 minutes)
+1. Install:
+   ```powershell
+   git clone https://github.com/EkpoFresco/FrescoStudioSkills.git
+   cd FrescoStudioSkills
+   .\install.ps1          # Mac / Git Bash: ./install.sh
+   ```
+2. Connect Roblox Studio (lets Claude play and screenshot your game):
+   - In Studio: **Assistant > ... > Manage MCP Servers > enable**.
+   - In a terminal: `claude mcp add --scope user roblox-studio -- "%LOCALAPPDATA%\Roblox\mcp.bat"`
+3. Restart Claude Code inside your game folder and type `/rbx-start`.
 
-Studio MCP (the default build path): Studio > Assistant > `...` > Manage MCP Servers > enable. Then `claude mcp add --scope user roblox-studio -- "%LOCALAPPDATA%\Roblox\mcp.bat"`.
+To update later, run `.\install.ps1 -Update`. More options: [docs/install.md](docs/install.md).
 
-## Use it on an existing game
-Open Claude Code inside the game folder (not a parent folder), on a branch:
-```powershell
-git clone <GAME_REPO_URL> MyGame; cd MyGame
-git switch -c <initials>/chore-studio-setup
-claude
-```
-Then paste:
-```
-This is my existing Roblox game. Use rbx-studio (https://github.com/EkpoFresco/FrescoStudioSkills).
-1. Run /rbx-start existing. It must only add .rbx-studio/.
-2. Run /rbx-review all, /rbx-remote-audit all, /rbx-data-audit. Findings only, ranked; fix nothing yet.
-3. One DONE / YOU DO / RISKS / NEXT report with the top 5 fixes as proposed branch names.
-Local commits only; never push, open a PR, or merge to main until I say "approved, push".
-```
-Then one fix per branch: `/rbx-build <fix>`, `/rbx-ship`, "approved, push".
+## First session
+**Existing game:** make a branch, open Claude Code in the game folder, then run:
+1. `/rbx-start` sets up `.rbx-studio/` and learns your code style.
+2. `/rbx-pickup` shows where things stand and the best next move.
+3. `/rbx-plan` turns your goal into small tasks (S-01, S-02...).
+4. `/rbx-build S-01` builds the first one.
 
-New game instead: `/rbx-start new`, then `/rbx-concept brainstorm <theme>`.
+**New game:** `/rbx-start new`, then `/rbx-concept brainstorm <theme>`.
 
-## What it does
-- MCP first: builds, inspects, plays, and screenshots the game through Roblox Studio's built-in MCP server. Recommends Rojo + Git when the team needs it.
-- QPTR over CTR: designs for players who stay. Grounded in Roblox's current ranking signals (PTR, first-play bounce, D1 / D2-7 / D8-28 retention from Recommended For You).
-- Mobile-first UX with a look check: nothing visual is done until it was launched and captured at phone and desktop sizes.
-- Production Luau: server authority, validated remotes, session-locked data, one receipt handler.
-- Code gets better over time: `code-optimizer` closes every story, `conventions.md` learns Keep and Phase out patterns, optimizations need before/after numbers.
-- Apply only what fits: every skill starts with a relevance check and skips itself when it does not apply.
-- Team-ready: issues as stories, module locks, handoff notes, PR prep. Pushes and PRs need your approval in your own words (hook-enforced).
-- Survives long sessions: `/rbx-checkpoint` and `/rbx-resume`, plus auto state from hooks.
-- Talks like you: result first, short lines, DONE / YOU DO / RISKS / NEXT.
+## What do you want to do?
+| I want to... | Type |
+| --- | --- |
+| Set up a game folder | `/rbx-start` |
+| See where things stand | `/rbx-pickup` |
+| Brainstorm or judge a game idea | `/rbx-concept` |
+| Plan the work into small tasks | `/rbx-plan` |
+| Build a feature or fix | `/rbx-build <task or description>` |
+| Play-test it with screenshots | `/rbx-playtest` |
+| Check the first minute for new players | `/rbx-first-60` |
+| Try a teammate's branch without merging | `/rbx-try <branch>` |
+| Review code | `/rbx-review` |
+| Check for exploits | `/rbx-remote-audit` |
+| Check saving and purchases are safe | `/rbx-data-audit` |
+| Fix lag | `/rbx-perf`, then `/rbx-optimize` |
+| Save progress before stopping | `/rbx-checkpoint` |
+| Pick up after a crash | `/rbx-resume` |
+| Hand work to a teammate | `/rbx-handoff` |
+| Push and open a PR | `/rbx-ship` |
 
-## Token budget
-Built to stay cheap in long sessions:
-- Every session (Roblox or not) pays ~857 tokens of listings: 12 model-visible skills, 17 user-only skills hidden from the model, short agent descriptions.
-- `.rbx-studio/map.md` (auto-refreshed at session start, zero model tokens) maps scripts, remotes, data, purchases, and hot paths, so skills open only the files they need.
-- `tools/lib.js` reads the research library by section (300 to 1,500 tokens) instead of whole files (8k to 13k).
-- Measured on the dogfood data audit: tool reads -79%, cost -29%, same findings. Track it with `node tools/token-budget.js`.
+<details>
+<summary>All 30 commands by stage</summary>
 
-## Skills
-| Stage | Skills |
+| Stage | Commands |
 |---|---|
 | Setup | `/rbx-start`, `/rbx-toolchain`, `/rbx-map`, `/rbx-checkpoint`, `/rbx-resume` |
 | Design | `/rbx-concept`, `/rbx-genre`, `/rbx-loop`, `/rbx-first-60`, `/rbx-plan`, `/rbx-monetize`, `/rbx-thumbnail` |
@@ -60,37 +58,58 @@ Built to stay cheap in long sessions:
 | Quality | `/rbx-review`, `/rbx-optimize`, `/rbx-perf`, `/rbx-remote-audit`, `/rbx-data-audit`, `/rbx-playtest` |
 | Growth | `/rbx-teardown`, `/rbx-metrics`, `/rbx-launch`, `/rbx-update` |
 | Team | `/rbx-issues`, `/rbx-handoff`, `/rbx-pickup`, `/rbx-try`, `/rbx-ship` |
+</details>
 
-Typical flow: `/rbx-start` -> `/rbx-concept brainstorm <theme>` -> `/rbx-concept <pick>` -> `/rbx-loop` -> `/rbx-first-60` -> `/rbx-plan` -> `/rbx-build S-01` (repeat) -> `/rbx-playtest` -> `/rbx-launch`. Live game: `/rbx-metrics` weekly, `/rbx-update` per release, `/rbx-optimize` monthly.
+## Safe by default
+- **Nothing goes to GitHub without you.** Push, PR and merge are blocked until you type `approved, push` or `/rbx-ship`.
+- **Your files stay yours.** It only writes `.rbx-studio/` in a game folder. It never moves, renames or reformats your code.
+- **Work stays on branches.** Commits are local until you approve.
+- **Nothing visual counts as done until it's screenshotted** on phone and desktop.
+- **Every change is reviewed** for speed and exploits before it closes.
 
-## Agents
-| Agent | Owns |
+## How it thinks
+- **Players who stay beat players who click.** Designs follow Roblox's real ranking signals: do players keep playing past the first few minutes, and come back the next day.
+- **Phone first.** Most Roblox players are on phones.
+- **Server decides, client asks.** Every message from a player is checked, so exploiters can't fake it.
+- **Short reports.** Every answer ends in four parts: DONE, YOU DO, RISKS, NEXT.
+
+<details>
+<summary>The helper team (18 specialists)</summary>
+
+| Helper | Handles |
 |---|---|
-| roblox-director | vision, scope, cuts, go/pivot/kill |
-| discovery-strategist | algorithm, thumbnails, launch, market data |
-| retention-designer | core loop, sessions, D1/D7/D30, curves |
-| genre-designer | any genre adapted to Roblox |
-| monetization-designer | passes, products, subs, economy, policy-safe |
-| ux-mobile-designer | first 60 s, touch, safe areas, parity, look check |
-| luau-architect | structure, types, toolchain, CI |
-| server-programmer | authority, remotes, anti-exploit |
-| client-ui-programmer | UI, input, camera, feel |
-| code-optimizer | top priority: closes every story, measured optimization |
-| art-generator | Studio MCP generation, style sheet, art look check |
-| data-engineer | DataStores, session locks, migrations, receipts |
-| analytics-engineer | events, funnels, Experiments |
-| exploit-tester | attacks every remote |
-| qa-playtester | plays via MCP, screenshots, smoke and soak |
-| liveops-designer | events, cadence, publishing, soft shutdown |
-| community-marketer | update logs, page copy, socials |
-| team-coordinator | issues, branches, locks, handoffs, PRs |
+| roblox-director | vision, scope, what to cut, go or kill calls |
+| discovery-strategist | getting found: algorithm, thumbnails, launch |
+| retention-designer | core loop, why players come back |
+| genre-designer | what works in your genre on Roblox |
+| monetization-designer | passes, products, fair pricing |
+| ux-mobile-designer | first minute, touch controls, phone layout |
+| luau-architect | code structure and tooling |
+| server-programmer | game logic, anti-exploit |
+| client-ui-programmer | UI, input, camera, game feel |
+| code-optimizer | reviews every change, fixes lag |
+| art-generator | in-Studio art and style |
+| data-engineer | saving, purchases, data safety |
+| analytics-engineer | tracking what players do |
+| exploit-tester | tries to break every system |
+| qa-playtester | plays the game and screenshots it |
+| liveops-designer | events and update schedule |
+| community-marketer | update logs, game page, socials |
+| team-coordinator | tasks, branches, handoffs |
+</details>
 
-## Research library
-`docs/roblox/`: studio reference and the Studio MCP tool manifest, discovery algorithm and playbook, market data tools, UX standards with a look check rubric, implementation (Luau, networking, exploits, perf), data and monetization APIs, policy, art pipeline, code quality, and 32 genre files. Every claim is sourced and dated (2026-11-03); gaps are in [OPEN_QUESTIONS.md](docs/roblox/OPEN_QUESTIONS.md).
+<details>
+<summary>Research library</summary>
 
-## Maintaining the studio
-- `node tools/studio-lint.js all` (static checks), `node tools/gen-catalog.js --check` (spec coverage), `bash tools/test-hooks.sh` (hooks in both shells), `pwsh -File tools/test-install.ps1 -Sandbox <dir>` (installer round trip).
-- `/skill-test` and `/skill-improve` run inside this repo.
-- Design and decisions: `docs/audit/ROBLOX_STUDIO_DESIGN.md`, `DECISIONS.md`.
+`docs/roblox/` holds sourced, dated notes on how Roblox works today: the discovery algorithm, phone UX standards, policy rules, data and purchase APIs, performance, and 32 genre guides. Unconfirmed facts are marked UNVERIFIED and listed in [OPEN_QUESTIONS.md](docs/roblox/OPEN_QUESTIONS.md).
+</details>
 
-License: MIT (upstream copyright kept).
+<details>
+<summary>For maintainers</summary>
+
+- Checks after editing `studio/`: `node tools/studio-lint.js all`, `node tools/gen-catalog.js --check`, `bash tools/test-hooks.sh`, `pwsh -File tools/test-install.ps1 -Sandbox <dir>`.
+- Token cost: a project map (`.rbx-studio/map.md`) and a section reader (`tools/lib.js`) keep sessions cheap. Track with `node tools/token-budget.js`.
+- Design notes: `docs/audit/ROBLOX_STUDIO_DESIGN.md`, `DECISIONS.md`. Changes: `CHANGELOG.md`.
+</details>
+
+Forked from [Claude Code Game Studios](https://github.com/Donchitos/Claude-Code-Game-Studios) v1.2.0 and rebuilt for Roblox only. License: MIT (upstream copyright kept).

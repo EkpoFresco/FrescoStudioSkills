@@ -22,7 +22,7 @@ macOS/Linux: the installer runs under PowerShell 7 (`brew install powershell`). 
 | Path under `~/.claude/` (or `$CLAUDE_CONFIG_DIR`) | What |
 |---|---|
 | `agents/<18 names>.md` | roblox-director, discovery-strategist, retention-designer, genre-designer, monetization-designer, ux-mobile-designer, luau-architect, server-programmer, client-ui-programmer, code-optimizer, art-generator, data-engineer, analytics-engineer, exploit-tester, qa-playtester, liveops-designer, community-marketer, team-coordinator |
-| `skills/rbx-*/` | 29 skills (12 model-visible, 17 user-only) (`/rbx-start` and friends) |
+| `skills/rbx-*/` | 30 skills (13 model-visible, 17 user-only) (`/rbx-start` and friends) |
 | `rules/rbx-*.md` | 7 path-scoped rules (load only when Claude touches matching Luau or project files) |
 | `rbx-studio/` | CONTEXT.md, hooks, docs, templates, tools, `library/roblox/` research, manifest, VERSION |
 | `settings.json` | 7 hook entries (SessionStart, UserPromptSubmit, PreToolUse, PostToolUse, PreCompact, Stop, Notification). Your other settings and hooks stay. |
