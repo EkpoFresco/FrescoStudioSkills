@@ -2,14 +2,14 @@
 Category: team · Source: `studio/skills/rbx-try/SKILL.md`
 
 ## Summary
-Tries a teammate's branch in Studio without merging. `rbx-try.ps1` makes a detached git worktree outside the game folder, writes `try.project.json` (game project plus every `*.spec.luau` as `ReplicatedStorage.<Name>Spec`), and runs `rojo serve` in the background. Builds a what-to-check list from commit bodies and new spec cases. Never commits, merges or pushes; the working copy and its branch stay untouched.
+Tries a teammate's branch in Studio without merging. `rbx-try.ps1` makes a detached git worktree outside the game folder, writes `try.project.json` (game project plus every `*.spec.luau` as `ReplicatedStorage.<Name>Spec`), and runs `rojo serve` in the background. Opens every report with a short WHAT CHANGED (max 4) and TEST (max 6) list from commit bodies and new spec cases. Never commits, merges or pushes; the working copy and its branch stay untouched.
 
 ## Static Assertions
 - [ ] Frontmatter complete; description starts "Roblox" and is under 300 chars
 - [ ] Relevance check skips non-git, non-Rojo games and already-merged branches with `SKIPPED:`
 - [ ] Serve runs in the background and waits for Rojo's listening line before saying ready
 - [ ] States that merging needs the developer's approval and is outside this skill
-- [ ] Report has DONE / YOU DO / RISKS / NEXT
+- [ ] Report opens with WHAT CHANGED (max 4 bullets) and TEST (max 6 bullets), then DONE / YOU DO / RISKS / NEXT
 
 ## Fixture Defaults
 Rojo game with `default.project.json`, `game/tests/WeaponCombat.spec.luau`, remote `origin` with `main` and two feature branches by a teammate.

@@ -1,6 +1,6 @@
 ---
 name: rbx-try
-description: "Roblox: try a teammate's branch in Studio without merging. Throwaway git worktree + rojo serve, spec modules synced, a what-to-check list from the commits. list, <branch>, status, clean."
+description: "Roblox: try a teammate's branch in Studio without merging. Throwaway git worktree + rojo serve, spec modules synced, a short what-changed and what-to-test list. list, <branch>, status, clean."
 argument-hint: "[list | <branch> [--port N] [--open] | status | clean <branch|all>]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, PowerShell
@@ -20,11 +20,11 @@ Tool: `{{RBX_HOME}}/tools/rbx-try.ps1` (run from the game folder with `powershel
 - "has saved changes" error: ask whether to discard them, then re-run with `-Reset`.
 - Note ahead/behind main. Behind by commits that touch the same files means the merge needs care later; flag it.
 
-## 2. What to check
-From the commit bodies and the changed files (read the diff with `git diff origin/main...origin/<branch>` only where the commit body is vague), write a short checklist:
-- Feel checks: one line per behavior change the commits claim, phrased as "you should see X".
-- Test checks: new or changed spec case names (`case("...")` lines added in `*.spec.luau`). Say how to run them: the game's own test UI if it has one (for example a Checks tab), else the Studio command bar `require(game.ReplicatedStorage.<Name>Spec).Run()`.
-- Regressions: older behavior the changed modules also own.
+## 2. What changed and what to test
+Read the commit bodies and changed files (open the diff with `git diff origin/main...origin/<branch>` only where a commit body is vague). Write two short lists in plain player-facing words, no code names unless needed:
+- **What changed**: max 4 bullets, about 12 words each. What the branch does to the game, not how.
+- **Test**: max 6 bullets, each "X should happen" so it can be judged by eye in one Play. Include one line for the test suite (the game's own test UI if it has one, for example a Checks tab, else `require(game.ReplicatedStorage.<Name>Spec).Run()` in the command bar) with the count of new or changed `case("...")` lines in `*.spec.luau`, and one line for the main regression risk.
+These two lists open the report, every time, before setup steps.
 
 ## 3. Serve
 Start it in the background so the session stays free: `rbx-try.ps1 serve <branch> -Port <N>` with `run_in_background`. Default port 34872; if a `rojo serve` already runs, use 34873 and up. `--open` adds `-OpenStudio`, which opens the worktree's own place copy (prefers a TestLab place).
@@ -36,18 +36,19 @@ Wait for the `Rojo server listening` line in its output before telling the devel
 - Merging is never part of this skill. When the developer likes a branch, point at `/rbx-ship` or a PR merge on GitHub; that needs their approval.
 
 ## Report
-Studio report shape only. No em dashes, no filler.
+Studio report shape only. No em dashes, no filler. WHAT CHANGED and TEST come first and stay that short.
 ```
+WHAT CHANGED (<branch>)
+- <max 4 bullets, plain words>
+TEST
+- <max 6 bullets: "X should happen", one test-suite line, one regression line>
 DONE
-- trying: <branch> @ <hash> (<n> ahead, <m> behind main), serving on localhost:<port>
-- worktree: <path> (spec modules: <names>)
+- serving <branch> @ <hash> on localhost:<port> (<n> ahead, <m> behind main)
+- worktree: <path>
 YOU DO
 1. Studio: open <place path> (throwaway copy) or your test place
 2. Plugins > Rojo > Connect (localhost:<port>), then Play
-3. Check:
-   - <feel check>
-   - <test: how to run, expected PASS>
-4. Say "next <branch>" to switch, or "stop" when done
+3. Say "next <branch>" to switch, or "stop" when done
 RISKS
 - <behind main on the same files, or none>
 NEXT
