@@ -27,6 +27,7 @@ Read the commit bodies and changed files (open the diff with `git diff origin/ma
 These two lists open the report, every time, before setup steps.
 
 ## 3. Serve
+Before reporting, confirm `git status --short` in the game folder is empty and say so in the FILES line. Not empty: name the files and stop.
 Start it in the background so the session stays free: `rbx-try.ps1 serve <branch> -Port <N>` with `run_in_background`. Default port 34872; if a `rojo serve` already runs, use 34873 and up. `--open` adds `-OpenStudio`, which opens the worktree's own place copy (prefers a TestLab place).
 Wait for the `Rojo server listening` line in its output before telling the developer it is ready. Port in use or rojo missing: report the exact error and the fix (`rokit install`, or another port).
 
@@ -36,12 +37,15 @@ Wait for the `Rojo server listening` line in its output before telling the devel
 - Merging is never part of this skill. When the developer likes a branch, point at `/rbx-ship` or a PR merge on GitHub; that needs their approval.
 
 ## Report
-Studio report shape only. No em dashes, no filler. WHAT CHANGED and TEST come first and stay that short.
+Everything the developer needs goes in the final reply text, never only in tool output: the terminal shows tool output dimmed and collapsed, and it goes unread. Repeat any path, port, error or file-safety fact there.
+Studio report shape only. No em dashes, no filler. WHAT CHANGED and TEST come first and stay that short. Always include the FILES line.
 ```
 WHAT CHANGED (<branch>)
 - <max 4 bullets, plain words>
 TEST
 - <max 6 bullets: "X should happen", one test-suite line, one regression line>
+FILES
+- game folder untouched (git status clean); only the throwaway worktree changed
 DONE
 - serving <branch> @ <hash> on localhost:<port> (<n> ahead, <m> behind main)
 - worktree: <path>

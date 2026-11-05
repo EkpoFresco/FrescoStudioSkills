@@ -8,6 +8,7 @@ Tries a teammate's branch in Studio without merging. `rbx-try.ps1` makes a detac
 - [ ] Frontmatter complete; description starts "Roblox" and is under 300 chars
 - [ ] Relevance check skips non-git, non-Rojo games and already-merged branches with `SKIPPED:`
 - [ ] Serve runs in the background and waits for Rojo's listening line before saying ready
+- [ ] Every fact the developer needs is in the final reply text, not only in tool output; FILES line confirms the game folder is untouched
 - [ ] States that merging needs the developer's approval and is outside this skill
 - [ ] Report opens with WHAT CHANGED (max 4 bullets) and TEST (max 6 bullets), then DONE / YOU DO / RISKS / NEXT
 
