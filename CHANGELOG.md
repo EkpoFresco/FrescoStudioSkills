@@ -1,5 +1,8 @@
 # Changelog
 
+## Unreleased
+- `/rbx-try` + `tools/rbx-try.ps1`: try a teammate's branch in Studio without merging. Detached worktree under `%USERPROFILE%\.rbx-try`, generated `try.project.json` that also syncs every `*.spec.luau` as `ReplicatedStorage.<Name>Spec`, `rojo serve` in the background, what-to-check list from commits. `list`, `prep`, `serve`, `status`, `clean`.
+
 ## 2.1.1 (2026-11-04)
 - Fix: the push/PR gate and Luau write checks now follow the game folder a command actually targets (`cd Game && git push`, `git -C Game push`, an edited file's repo), not only the folder Claude Code started in. Approvals typed in a session started outside the game are kept session-wide. 6 new hook tests per shell (66/66 bash + pwsh 7, 33/33 Windows PowerShell 5.1).
 - README: real clone URL and an existing-game quickstart prompt.

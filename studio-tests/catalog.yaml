@@ -281,6 +281,16 @@ skills:
     last_spec_result: ""
     last_category: ""
     last_category_result: ""
+  - name: rbx-try
+    spec: studio-tests/skills/team/rbx-try.md
+    category: team
+    priority: medium
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
   - name: rbx-update
     spec: studio-tests/skills/growth/rbx-update.md
     category: growth

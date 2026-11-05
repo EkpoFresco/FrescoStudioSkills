@@ -59,7 +59,7 @@ Built to stay cheap in long sessions:
 | Build | `/rbx-build`, `/rbx-art`, `/rbx-telemetry` |
 | Quality | `/rbx-review`, `/rbx-optimize`, `/rbx-perf`, `/rbx-remote-audit`, `/rbx-data-audit`, `/rbx-playtest` |
 | Growth | `/rbx-teardown`, `/rbx-metrics`, `/rbx-launch`, `/rbx-update` |
-| Team | `/rbx-issues`, `/rbx-handoff`, `/rbx-pickup`, `/rbx-ship` |
+| Team | `/rbx-issues`, `/rbx-handoff`, `/rbx-pickup`, `/rbx-try`, `/rbx-ship` |
 
 Typical flow: `/rbx-start` -> `/rbx-concept brainstorm <theme>` -> `/rbx-concept <pick>` -> `/rbx-loop` -> `/rbx-first-60` -> `/rbx-plan` -> `/rbx-build S-01` (repeat) -> `/rbx-playtest` -> `/rbx-launch`. Live game: `/rbx-metrics` weekly, `/rbx-update` per release, `/rbx-optimize` monthly.
 

@@ -1,0 +1,55 @@
+---
+name: rbx-try
+description: "Roblox: try a teammate's branch in Studio without merging. Throwaway git worktree + rojo serve, spec modules synced, a what-to-check list from the commits. list, <branch>, status, clean."
+argument-hint: "[list | <branch> [--port N] [--open] | status | clean <branch|all>]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash, PowerShell
+---
+
+# /rbx-try
+
+Tool: `{{RBX_HOME}}/tools/rbx-try.ps1` (run from the game folder with `powershell -NoProfile -ExecutionPolicy Bypass -File`). It never commits, merges or pushes, and never touches the working copy or its branch. Each tried branch lives in a detached worktree under `%USERPROFILE%\.rbx-try\<game>\<branch>`, with its own copy of every place file, so saving in Studio there cannot change the real game folder.
+
+## 0. Relevance check
+- Not a git repo, or no `*.project.json`: the tool prints `SKIPPED: ...`; report it and stop. Suggest `/rbx-toolchain rojo` for a Studio-only game.
+- No argument or `list`: run `list`, show the table, then stop. Rows marked `merged` need no try: `SKIPPED: <branch> is already in main`.
+- `status` or `clean`: run that command, report, stop. `clean` discards anything saved inside the worktree; say so first.
+
+## 1. Prep the branch
+`rbx-try.ps1 prep <branch>` (partial names work if they match one branch). It fetches, creates or refreshes the worktree at the remote tip, and writes `try.project.json`: the game's project plus every `*.spec.luau` as `ReplicatedStorage.<Name>Spec`, so test suites need no copy and paste.
+- "has saved changes" error: ask whether to discard them, then re-run with `-Reset`.
+- Note ahead/behind main. Behind by commits that touch the same files means the merge needs care later; flag it.
+
+## 2. What to check
+From the commit bodies and the changed files (read the diff with `git diff origin/main...origin/<branch>` only where the commit body is vague), write a short checklist:
+- Feel checks: one line per behavior change the commits claim, phrased as "you should see X".
+- Test checks: new or changed spec case names (`case("...")` lines added in `*.spec.luau`). Say how to run them: the game's own test UI if it has one (for example a Checks tab), else the Studio command bar `require(game.ReplicatedStorage.<Name>Spec).Run()`.
+- Regressions: older behavior the changed modules also own.
+
+## 3. Serve
+Start it in the background so the session stays free: `rbx-try.ps1 serve <branch> -Port <N>` with `run_in_background`. Default port 34872; if a `rojo serve` already runs, use 34873 and up. `--open` adds `-OpenStudio`, which opens the worktree's own place copy (prefers a TestLab place).
+Wait for the `Rojo server listening` line in its output before telling the developer it is ready. Port in use or rojo missing: report the exact error and the fix (`rokit install`, or another port).
+
+## 4. Switch or stop
+- Another branch: stop the running serve (TaskStop), then step 1 for the next branch. Studio stays connected only after Rojo reconnects: Plugins > Rojo > Disconnect, then Connect.
+- Done testing: stop the serve, leave the worktree for a quick retry, or `clean` it.
+- Merging is never part of this skill. When the developer likes a branch, point at `/rbx-ship` or a PR merge on GitHub; that needs their approval.
+
+## Report
+Studio report shape only. No em dashes, no filler.
+```
+DONE
+- trying: <branch> @ <hash> (<n> ahead, <m> behind main), serving on localhost:<port>
+- worktree: <path> (spec modules: <names>)
+YOU DO
+1. Studio: open <place path> (throwaway copy) or your test place
+2. Plugins > Rojo > Connect (localhost:<port>), then Play
+3. Check:
+   - <feel check>
+   - <test: how to run, expected PASS>
+4. Say "next <branch>" to switch, or "stop" when done
+RISKS
+- <behind main on the same files, or none>
+NEXT
+- /rbx-try <next branch> or /rbx-ship once a branch is approved
+```

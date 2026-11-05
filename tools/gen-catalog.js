@@ -14,7 +14,7 @@ const SKILL_CAT = {
   build: ['rbx-build', 'rbx-art', 'rbx-telemetry'],
   audit: ['rbx-remote-audit', 'rbx-data-audit', 'rbx-perf', 'rbx-review', 'rbx-optimize', 'rbx-playtest'],
   growth: ['rbx-teardown', 'rbx-metrics', 'rbx-launch', 'rbx-update'],
-  team: ['rbx-issues', 'rbx-handoff', 'rbx-pickup', 'rbx-ship'],
+  team: ['rbx-issues', 'rbx-handoff', 'rbx-pickup', 'rbx-ship', 'rbx-try'],
 };
 const AGENT_CAT = {
   director: ['roblox-director'],
