@@ -11,7 +11,7 @@ const CAT = path.join(REPO, 'studio-tests', 'catalog.yaml');
 const SKILL_CAT = {
   setup: ['rbx-start', 'rbx-toolchain', 'rbx-checkpoint', 'rbx-resume', 'rbx-map'],
   design: ['rbx-concept', 'rbx-genre', 'rbx-first-60', 'rbx-loop', 'rbx-plan', 'rbx-monetize', 'rbx-thumbnail'],
-  build: ['rbx-build', 'rbx-art', 'rbx-telemetry'],
+  build: ['rbx-build', 'rbx-art', 'rbx-telemetry', 'rbx-ui-reference'],
   audit: ['rbx-remote-audit', 'rbx-data-audit', 'rbx-perf', 'rbx-review', 'rbx-optimize', 'rbx-playtest'],
   growth: ['rbx-teardown', 'rbx-metrics', 'rbx-launch', 'rbx-update'],
   team: ['rbx-issues', 'rbx-handoff', 'rbx-pickup', 'rbx-ship', 'rbx-try'],

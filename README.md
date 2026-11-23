@@ -35,6 +35,7 @@ To update later, run `.\install.ps1 -Update`. More options: [docs/install.md](do
 | Brainstorm or judge a game idea | `/rbx-concept` |
 | Plan the work into small tasks | `/rbx-plan` |
 | Build a feature or fix | `/rbx-build <task or description>` |
+| Turn a UI video into a design brief | `/rbx-ui-reference <link or reference>` |
 | Play-test it with screenshots | `/rbx-playtest` |
 | Check the first minute for new players | `/rbx-first-60` |
 | Try a teammate's branch without merging | `/rbx-try <branch>` |
@@ -48,13 +49,13 @@ To update later, run `.\install.ps1 -Update`. More options: [docs/install.md](do
 | Push and open a PR | `/rbx-ship` |
 
 <details>
-<summary>All 30 commands by stage</summary>
+<summary>All 31 commands by stage</summary>
 
 | Stage | Commands |
 |---|---|
 | Setup | `/rbx-start`, `/rbx-toolchain`, `/rbx-map`, `/rbx-checkpoint`, `/rbx-resume` |
 | Design | `/rbx-concept`, `/rbx-genre`, `/rbx-loop`, `/rbx-first-60`, `/rbx-plan`, `/rbx-monetize`, `/rbx-thumbnail` |
-| Build | `/rbx-build`, `/rbx-art`, `/rbx-telemetry` |
+| Build | `/rbx-build`, `/rbx-art`, `/rbx-telemetry`, `/rbx-ui-reference` |
 | Quality | `/rbx-review`, `/rbx-optimize`, `/rbx-perf`, `/rbx-remote-audit`, `/rbx-data-audit`, `/rbx-playtest` |
 | Growth | `/rbx-teardown`, `/rbx-metrics`, `/rbx-launch`, `/rbx-update` |
 | Team | `/rbx-issues`, `/rbx-handoff`, `/rbx-pickup`, `/rbx-try`, `/rbx-ship` |

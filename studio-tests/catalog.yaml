@@ -291,6 +291,16 @@ skills:
     last_spec_result: ""
     last_category: ""
     last_category_result: ""
+  - name: rbx-ui-reference
+    spec: studio-tests/skills/build/rbx-ui-reference.md
+    category: build
+    priority: medium
+    last_static: ""
+    last_static_result: ""
+    last_spec: ""
+    last_spec_result: ""
+    last_category: ""
+    last_category_result: ""
   - name: rbx-update
     spec: studio-tests/skills/growth/rbx-update.md
     category: growth
